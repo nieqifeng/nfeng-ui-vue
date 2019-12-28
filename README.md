@@ -61,5 +61,5 @@ Properties that are currently available on the plugin:
 
 ### Questions, bugs
 
- - Create [an issue](https://github.com/N-feng/nfeng-utils/issues) or ping me on twitter [@nfeng](https://twitter.com/imnfeng)
+ - Create [an issue](https://github.com/N-feng/nfeng-ui-vue/issues) or ping me on twitter [@nfeng](https://twitter.com/imnfeng)
 

@@ -47,6 +47,9 @@
             v-for="option in item.selectOptions"
             :key="option.value">{{option.text}}</a-select-option>
         </a-select>
+        <a-checkbox 
+          v-if="item.type === 'checkbox'" 
+          v-decorator="item.decorator">{{item.text}}</a-checkbox>
         <nf-upload-img
           v-if="item.type === 'upload'"
           targetType="recharge_voucher_img" 
