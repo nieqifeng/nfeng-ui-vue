@@ -12,7 +12,7 @@
         :style="{marginBottom: item.type === 'text' || item.type === 'alert' ? '12px' : ''}">
         <a-alert 
           v-if="item.type === 'alert' && item.value"
-          type="info" 
+          :type="item.alertType || 'info'" 
           showIcon>
           <p slot="message">
             <span v-html="item.value"></span>
