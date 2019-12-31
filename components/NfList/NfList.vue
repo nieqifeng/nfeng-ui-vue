@@ -1,5 +1,20 @@
 <template>
-  <div>
+  <div class="nf-list">
+    <a-tabs 
+      class="tabs-noborder"
+      :defaultActiveKey="tabPanes.legnth ? tabPanes[0].key : ''" 
+      @change="callback">
+        <a-tab-pane 
+          v-for="pane in tabPanes" 
+          :tab="pane.title" 
+          :key="pane.key" 
+          :closable="pane.closable"></a-tab-pane>
+        <a-button 
+          slot="tabBarExtraContent" 
+          type="primary" 
+          v-if="btnText"
+          @click="$emit('btnClick')">{{btnText}}</a-button>
+      </a-tabs>
     <a-table
       :columns="tableColumns"
       :dataSource="tableList"
@@ -7,17 +22,7 @@
       :pagination="pagination"
       :rowKey="record => record.rowKey"
       @change="tableChange"
-    >
-      <!-- <template v-for="(item, key) in tableColumns">
-        <div :key="key" v-if="item.scopedSlots">
-          <slot :name="item.scopedSlots.customRender"></slot>
-        </div>
-      </template> -->
-      <template v-for="item in tableColumns" :slot="item.tooltip && item.scopedSlots && item.scopedSlots.customRender">
-        <!-- <slot v-if="item.scopedSlots">111</slot> -->111
-      </template>
-      
-    </a-table>
+    ></a-table>
   </div>
 </template>
 
@@ -33,6 +38,18 @@ export default {
     },
     tableColumns: {
       type: Array
+    },
+    tabPanes: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+    tabChange: {
+      type: Function
+    },
+    btnText: {
+      type: String
     }
   },
   data() {
@@ -55,28 +72,6 @@ export default {
     // 查询
     getList(values) {
       this.loading = true
-      // console.log(values)
-      // if (values && values.state) {
-      //   this.searchForm.stateForQuery = [values.state]
-      //   delete values.state
-      // } else {
-      //   this.searchForm.stateForQuery = []
-      // }
-
-      // if (values && values.startAt) {
-      //   this.searchForm.createAtBegin = values.startAt.format('YYYY-MM-DD')
-      //   delete values.startAt
-      // } else {
-      //   this.searchForm.createAtBegin = ''
-      // }
-      // if (values && values.endAt) {
-      //   this.searchForm.createAtEnd = values.endAt.format('YYYY-MM-DD')
-      //   delete values.endAt
-      // } else {
-      //   this.searchForm.createAtEnd = ''
-      // }
-
-      // Object.assign(this.fields, values)
       this.queryFunction(this.queryFields).then(({ list, total }) => {
         this.tableList = list.map((item, key) => {
           item.rowKey = key
@@ -86,14 +81,17 @@ export default {
         console.log('done')
         this.loading = false
       })
-      // Object.assign(this.searchForm, values)
-      // getQueryList(this.searchForm)
     },
     // 分页
     tableChange(pagination) {
-      this.searchForm.page = pagination.current
-      this.searchForm.pageSize = pagination.pageSize
+      this.queryFields.page = pagination.current
+      this.queryFields.pageSize = pagination.pageSize
       this.getList()
+    },
+    callback(key) {
+      if (this.tabChange) {
+        this.tabChange(key)
+      }
     }
   }
 }

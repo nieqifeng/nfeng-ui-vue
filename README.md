@@ -2,6 +2,8 @@
 
 原nfeng-utils升级成为nfeng-ui-vue吧
 
+加入了组件模块是基于ant-design-vue的二次封装
+
 ## Usage
 
 ### Install via NPM

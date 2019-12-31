@@ -1,3 +1,4 @@
 import NfList from './NfList.vue'
+import NfFormList from './NfFormList.vue'
 
-export default [NfList]
+export default [NfList, NfFormList]
