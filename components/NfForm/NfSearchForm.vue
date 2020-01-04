@@ -56,7 +56,7 @@ export default {
   props: {
     fieldOptions: {
       type: Array,
-      default: () => {
+      default: function () {
         return []
       }
     }
@@ -74,7 +74,7 @@ export default {
     this.form = this.$form.createForm(this, {
       mapPropsToFields: () => {
         const obj = {}
-        this.fieldOptions.forEach(item => {
+        this.fieldOptions.forEach((item) => {
           obj[item.decorator[0]] = this.$form.createFormField({
             value: item.value
           })

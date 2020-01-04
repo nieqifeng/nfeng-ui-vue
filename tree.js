@@ -30,9 +30,9 @@ const translator = (parents, children) => {
  */
 export function translateDataToTree(data) {
   // 没有父节点的数据
-  const parents = data.filter((value) => value.parentId === 'undefined' || value.parentId == null)
+  const parents = data.filter(value => value.parentId === 'undefined' || value.parentId == null)
   // 有父节点的数据
-  const children = data.filter((value) => value.parentId !== 'undefined' && value.parentId != null)
+  const children = data.filter(value => value.parentId !== 'undefined' && value.parentId != null)
 
   translator(parents, children)
 

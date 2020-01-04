@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import NfSearchForm from '../NfForm/NfSearchForm'
-import NfList from './NfList'
+import NfSearchForm from '../NfForm/NfSearchForm.vue'
+import NfList from './NfList.vue'
 
 export default {
   name: 'NfFormList',
@@ -27,7 +27,7 @@ export default {
   props: {
     fieldOptions: {
       type: Array,
-      default: () => {
+      default: function () {
         return []
       }
     },
@@ -42,7 +42,7 @@ export default {
     },
     tabPanes: {
       type: Array,
-      default: () => {
+      default: function () {
         return []
       }
     },

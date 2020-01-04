@@ -1,8 +1,8 @@
 <template>
-  <div 
-    class="v-modal" 
-    v-show="showVModal" 
-    @click="showVModal = false" 
+  <div
+    class="v-modal"
+    v-show="showVModal"
+    @click="showVModal = false"
     :style="{ backgroundImage: imgList.length ? `url(${imgList[currentIndex - 1]})` : ''}">
       <div class="left" @click.stop="currentIndex === 1 ? null : currentIndex -= 1"></div>
       <div class="right" @click.stop="currentIndex === imgList.length ? null : currentIndex += 1"></div>
@@ -24,14 +24,14 @@ export default {
   data() {
     return {
       showVModal: false,
-      currentIndex: 1,
+      currentIndex: 1
     }
   },
   methods: {
     open(key) {
       this.showVModal = true
       this.currentIndex = key || 1
-    },
+    }
   }
 }
 </script>

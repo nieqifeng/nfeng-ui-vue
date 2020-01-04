@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div 
-      v-for="(item, key) in fileList" 
+    <div
+      v-for="(item, key) in fileList"
       :key="key"
       style="display: inline-block;margin-right: 20px;">
       <div
@@ -37,7 +37,7 @@
         <a @click="$refs['v-modal'].open()">凭证示例</a>
       </div>
     </div>
-    
+
     <nf-v-modal ref="v-modal" :imgList="imgList"></nf-v-modal>
   </div>
 </template>
@@ -52,7 +52,7 @@ export default {
     //   type: Array,
     //   default() {
     //     return []
-    //   } 
+    //   }
     // },
     targetType: {
       type: String
@@ -83,7 +83,7 @@ export default {
       const { file } = e
       const { targetType, action, imgIndex } = this
       if (!this.beforeUpload() && imgIndex === undefined) {
-        this.$message.error('最多只能上传10张图片！');
+        this.$message.error('最多只能上传10张图片！')
         return
       }
       const formData = new FormData()
@@ -95,7 +95,7 @@ export default {
         method: 'post',
         headers: { 'Content-Type': 'multipart/form-data' },
         data: formData
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.downloadCode) {
           const imgData = {
             imageUrl: URL.createObjectURL(file),
@@ -111,9 +111,9 @@ export default {
         }
       })
     },
-    beforeUpload(file) {
+    beforeUpload() {
       const maxLength = this.fileList.length < 10 - 1
-      return maxLength;
+      return maxLength
     },
     deleteHandle(key) {
       this.fileList.splice(key, 1)

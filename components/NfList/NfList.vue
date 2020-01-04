@@ -1,17 +1,17 @@
 <template>
   <div class="nf-list">
-    <a-tabs 
+    <a-tabs
       class="tabs-noborder"
-      :defaultActiveKey="tabPanes.legnth ? tabPanes[0].key : ''" 
+      :defaultActiveKey="tabPanes.legnth ? tabPanes[0].key : ''"
       @change="callback">
-        <a-tab-pane 
-          v-for="pane in tabPanes" 
-          :tab="pane.title" 
-          :key="pane.key" 
+        <a-tab-pane
+          v-for="pane in tabPanes"
+          :tab="pane.title"
+          :key="pane.key"
           :closable="pane.closable"></a-tab-pane>
-        <a-button 
-          slot="tabBarExtraContent" 
-          type="primary" 
+        <a-button
+          slot="tabBarExtraContent"
+          type="primary"
           v-if="btnText"
           @click="$emit('btnClick')">{{btnText}}</a-button>
       </a-tabs>
@@ -41,7 +41,7 @@ export default {
     },
     tabPanes: {
       type: Array,
-      default: () => {
+      default: function () {
         return []
       }
     },
@@ -61,7 +61,7 @@ export default {
         showSizeChanger: true,
         pageSize: 10,
         total: 0,
-        showTotal: (total) => `共 ${total} 条`
+        showTotal: total => `共 ${total} 条`
       },
       // 表格数据
       tableList: [],
@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     // 查询
-    getList(values) {
+    getList() {
       this.loading = true
       this.queryFunction(this.queryFields).then(({ list, total }) => {
         this.tableList = list.map((item, key) => {
