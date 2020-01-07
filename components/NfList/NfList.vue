@@ -41,7 +41,7 @@ export default {
     },
     tabPanes: {
       type: Array,
-      default: function () {
+      default() {
         return []
       }
     },

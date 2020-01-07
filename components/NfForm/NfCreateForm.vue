@@ -1,81 +1,119 @@
 <template>
-  <a-form :form="form">
-    <template v-for="item in fieldOptions">
-      <a-form-item
-        :key="item.label"
-        :label="item.label"
-        :label-col="{ span: 4 }"
-        :wrapper-col="item.wrapperCol || { span: item.label ? 14 : '' }"
-        :help="item.help"
-        :validate-status="item.validateStatus"
-        v-if="!item.hide"
-        :style="{marginBottom: item.type === 'text' || item.type === 'alert' ? '12px' : ''}">
-        <a-alert 
-          v-if="item.type === 'alert' && item.value"
-          :type="item.alertType || 'info'" 
-          showIcon>
-          <p slot="message">
-            <span v-html="item.value"></span>
-          </p>
-        </a-alert>
-        <span 
-          v-if="item.type === 'text'" 
-          class="nf-form-text" 
-          :style="{color:item.placeholder ? '#999': ''}" 
-          v-html="item.value || item.placeholder">
-        </span>
-        <span 
-          v-if="item.tips"
-          class="nf-form-tips"
-          v-html="item.tips"
-          :style="{marginLeft: item.type === 'text' && item.value ? '20px' : ''}"></span>
-        <a-input
-          v-if="item.type === 'input'"
-          :placeholder="item.placeholder || '请输入'"
-          v-decorator="item.decorator"
-          :disabled="item.disabled"></a-input>
-        <a-select
-          v-if="item.type === 'select'"
-          :labelInValue="item.labelInValue"
-          showSearch
-          :placeholder="item.placeholder || '请选择'"
-          optionFilterProp="children"
-          @change="item.change"
-          :filterOption="filterOption"
-          v-decorator="item.decorator">
-          <a-select-option
-            v-for="option in item.selectOptions"
-            :key="option.value">{{option.text}}</a-select-option>
-        </a-select>
-        <a-checkbox 
-          v-if="item.type === 'checkbox'" 
-          v-decorator="item.decorator">{{item.text}}</a-checkbox>
-        <nf-upload-img
-          v-if="item.type === 'upload'"
-          targetType="recharge_voucher_img" 
-          action="/api/sysmgr-web/file/upload"
-          @uploadSuccess="item.uploadSuccess"
-          @deleteHandle="item.deleteHandle"></nf-upload-img>
-      </a-form-item>
-    </template>
+  <a-form class="nf-create-form" :form="form" @submit="handleSubmit">
+    <div class="nf-form-wrap">
+      <nf-title v-if="title" :title="title"></nf-title>
+      <template v-for="item in fieldOptions">
+        <a-form-item
+          :key="item.label"
+          :label="item.label"
+          :label-col="item.labelCol || { span: 9 }"
+          :wrapper-col="item.wrapperCol || { span: 15 }"
+          v-if="!item.hide"
+          :style="item.style"
+        >
+          <span v-if="item.type === 'text'" v-html="item.value"></span>
+          <nf-render v-if="item.type === 'render'" :render="item.render"></nf-render>
+          <a-input
+            v-if="item.type === 'input' || item.type === 'number'"
+            class="nf-form-input"
+            :type="item.type"
+            :addonAfter="item.addonAfter"
+            :placeholder="item.placeholder || '请输入'"
+            @change="item.change"
+            v-decorator="item.decorator"
+            :disabled="item.disabled"
+          ></a-input>
+          <a-select
+            v-if="item.type === 'select'"
+            class="nf-form-input"
+            :labelInValue="item.labelInValue"
+            showSearch
+            :placeholder="item.placeholder || '请选择'"
+            optionFilterProp="children"
+            @change="item.change"
+            :filterOption="filterOption"
+            v-decorator="item.decorator"
+          >
+            <a-select-option
+              v-for="option in item.selectOptions"
+              :key="option.value"
+            >{{option.text}}</a-select-option>
+          </a-select>
+          <a-checkbox-group v-if="item.type === 'checkbox'" v-decorator="item.decorator">
+            <a-checkbox
+              v-for="option in item.selectOptions"
+              :key="option.value"
+              :value="option.value"
+            >{{option.text}}</a-checkbox>
+          </a-checkbox-group>
+          <nf-upload
+            v-if="item.type === 'upload'"
+            v-decorator="item.decorator"
+            :buttonText="item.buttonText"
+            :limit="item.limit"
+            :imageList="item.value"
+          ></nf-upload>
+        </a-form-item>
+      </template>
+    </div>
+    <slot></slot>
+    <div class="nf-form-btn" v-if="showBtn">
+      <slot name="button"></slot>
+      <a-button type="primary" html-type="submit">{{submitText}}</a-button>
+    </div>
   </a-form>
 </template>
 
 <script>
+import NfTitle from '../NfTitle/NfTitle.vue'
+import NfUpload from '../NfUpload/NfUpload.vue'
+import NfRender from '../NfRender/NfRender.vue'
+
 export default {
   name: 'NfCreateForm',
+  components: {
+    NfTitle,
+    NfUpload,
+    NfRender
+  },
   props: {
     fieldOptions: {
       type: Array
+    },
+    title: {
+      type: String
+    },
+    showBtn: {
+      type: Boolean,
+      default: true
+    },
+    submitText: {
+      type: String,
+      default: '提交'
+    },
+    fields: {
+      type: Object
+    }
+  },
+  watch: {
+    fields(val) {
+      const obj = {}
+      Object.keys(this.form.getFieldsValue()).forEach((item) => {
+        obj[item] = val[item]
+      })
+      this.form.setFieldsValue(obj)
     }
   },
   methods: {
     filterOption(input, option) {
-      return option.componentOptions.children[0]
-        .text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      return (
+        option.componentOptions.children[0].text
+          .toLowerCase()
+          .indexOf(input.toLowerCase()) >= 0
+      )
     },
     handleSubmit(e) {
-      // e.preventDefault()
+      e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
           this.$emit('submit', values)
@@ -89,21 +127,35 @@ export default {
         const obj = {}
         this.fieldOptions.forEach((item) => {
           obj[item.decorator[0]] = this.$form.createFormField({
-            value: item.value,
+            value: item.value
           })
         })
         return obj
       },
       onValuesChange: (_, values) => {
         this.$emit('change', values)
-      },
+      }
     })
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.nf-form-tips {
-  color: #999;
+<style lang="scss">
+.nf-create-form {
+  margin-bottom: 20px;
+}
+.nf-form-wrap {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 2px 6px 0px rgba(204, 204, 204, 0.4);
+  padding-top: 25px;
+  padding-bottom: 1px;
+}
+.nf-form-btn {
+  background-color: #f0f2f5;
+  text-align: center;
+  margin-top: 20px;
+}
+.nf-form-input {
+  width: 360px !important;
 }
 </style>

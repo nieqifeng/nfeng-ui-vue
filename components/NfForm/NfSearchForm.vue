@@ -1,5 +1,5 @@
 <template>
-  <a-form class="ant-advanced-search-form" :form="form" @submit="handleSubmit">
+  <a-form class="nf-search-form" :form="form" @submit="handleSubmit">
     <div :class="{ 'hide-wrap' : expand }">
       <div class="form-item-wrap" ref="form-item-wrap">
         <a-form-item
@@ -56,7 +56,7 @@ export default {
   props: {
     fieldOptions: {
       type: Array,
-      default: function () {
+      default() {
         return []
       }
     }
@@ -107,7 +107,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.ant-advanced-search-form {
+.nf-search-form {
   padding: 20px 20px 0 20px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 4px;

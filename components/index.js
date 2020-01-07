@@ -1,15 +1,13 @@
-import NfVModal from './NfVModal/index.vue'
-import NfTitle from './NfTitle/index.vue'
-import NfBox from './NfBox'
-import NfUpload from './NfUpload'
+import NfVModal from './NfVModal/NfVModal.vue'
+import NfTitle from './NfTitle/NfTitle.vue'
+import NfUpload from './NfUpload/NfUpload.vue'
 import NfForm from './NfForm'
 import NfList from './NfList'
 
 const components = [
   NfVModal,
   NfTitle,
-  ...NfBox,
-  ...NfUpload,
+  NfUpload,
   ...NfForm,
   ...NfList
 ]

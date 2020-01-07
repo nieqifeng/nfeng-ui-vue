@@ -1,13 +1,13 @@
 <template>
   <div>
     <div style="background: white;padding: 20px 30px;margin-top: 18px;">
-      <nf-search-form 
-        :fieldOptions="fieldOptions" 
+      <nf-search-form
+        :fieldOptions="fieldOptions"
         @submit="submitHandle"></nf-search-form>
-      <nf-list 
-        ref="list" 
-        :queryFields="queryFields" 
-        :queryFunction="queryFunction" 
+      <nf-list
+        ref="list"
+        :queryFields="queryFields"
+        :queryFunction="queryFunction"
         :tableColumns="tableColumns"
         :tabPanes="tabPanes"
         :tabChange="tabChange"
@@ -27,7 +27,7 @@ export default {
   props: {
     fieldOptions: {
       type: Array,
-      default: function () {
+      default() {
         return []
       }
     },
@@ -42,7 +42,7 @@ export default {
     },
     tabPanes: {
       type: Array,
-      default: function () {
+      default() {
         return []
       }
     },
