@@ -13,7 +13,7 @@
         >
           <span v-if="item.type === 'text'" v-html="item.value"></span>
           <slot v-if="item.type === 'slot'" :name="item.decorator[0]"></slot>
-          <nf-render v-if="item.type === 'render'" :render="item.render"></nf-render>
+          <!-- <nf-render v-if="item.type === 'render'" :render="item.render"></nf-render> -->
           <a-input
             v-if="item.type === 'input' || item.type === 'number'"
             class="nf-form-input"
@@ -68,14 +68,14 @@
 <script>
 import NfTitle from '../NfTitle/NfTitle.vue'
 import NfUpload from '../NfUpload/NfUpload.vue'
-import NfRender from '../NfRender/NfRender.vue'
+// import NfRender from '../NfRender/NfRender.vue'
 
 export default {
   name: 'NfCreateForm',
   components: {
     NfTitle,
-    NfUpload,
-    NfRender
+    NfUpload
+    // NfRender
   },
   props: {
     fieldOptions: {

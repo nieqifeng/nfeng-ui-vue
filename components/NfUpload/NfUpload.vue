@@ -13,7 +13,7 @@
       :class="{ 'nf-form-upload': Array.isArray(buttonText) }"
     >
       <template v-if="Array.isArray(buttonText)">
-        <template v-for="key in limit">{{fileList.length}}{{key}}
+        <template v-for="key in limit">
           <span class="nf-form-upload-item" :key="key" v-if="key > fileList.length && buttonText.length >= key">
             <div>
               <a-icon type="plus" />

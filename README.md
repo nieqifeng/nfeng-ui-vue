@@ -10,6 +10,10 @@
 
 ## History
 
+-- 1.0.22 --
+
+去掉表单里面的render，template够用了，修复小bug
+
 -- 1.0.21 --
 
 解决一个动态表单item显示隐藏的bug
