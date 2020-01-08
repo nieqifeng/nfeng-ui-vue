@@ -1,6 +1,6 @@
 <template>
-  <a-form class="nf-create-form" :form="form" @submit="handleSubmit">
-    <div class="nf-form-wrap">
+  <a-form class="nf-form-create" :form="form" @submit="handleSubmit">
+    <div class="nf-form-box" v-if="showBox">
       <nf-title v-if="title" :title="title"></nf-title>
       <template v-for="item in fieldOptions">
         <a-form-item
@@ -8,10 +8,11 @@
           :label="item.label"
           :label-col="item.labelCol || { span: 9 }"
           :wrapper-col="item.wrapperCol || { span: 15 }"
-          v-if="!item.hide"
+          v-if="item.show === undefined || item.show"
           :style="item.style"
         >
           <span v-if="item.type === 'text'" v-html="item.value"></span>
+          <slot v-if="item.type === 'slot'" :name="item.decorator[0]"></slot>
           <nf-render v-if="item.type === 'render'" :render="item.render"></nf-render>
           <a-input
             v-if="item.type === 'input' || item.type === 'number'"
@@ -83,6 +84,10 @@ export default {
     title: {
       type: String
     },
+    showBox: {
+      type: Boolean,
+      default: true
+    },
     showBtn: {
       type: Boolean,
       default: true
@@ -141,14 +146,13 @@ export default {
 </script>
 
 <style lang="scss">
-.nf-create-form {
+.nf-form-create {
   margin-bottom: 20px;
 }
-.nf-form-wrap {
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0px 2px 6px 0px rgba(204, 204, 204, 0.4);
-  padding-top: 25px;
-  padding-bottom: 1px;
+.nf-form-box {
+  background:rgba(255,255,255,1);
+  box-shadow:0px 2px 6px 0px rgba(204,204,204,0.4);
+  padding: 20px;
 }
 .nf-form-btn {
   background-color: #f0f2f5;

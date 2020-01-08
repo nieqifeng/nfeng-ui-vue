@@ -10,15 +10,23 @@
       @preview="handlePreview"
       @change="handleChange"
       :multiple="true"
-      class="nf-form-upload"
+      :class="{ 'nf-form-upload': Array.isArray(buttonText) }"
     >
-      <template v-for="key in limit">
-        <span class="nf-form-upload-item" :key="key" v-if="key > fileList.length">
-          <div>
-            <a-icon type="plus" />
-            <div class="ant-upload-text">{{buttonText[key] || buttonText[0]}}</div>
-          </div>
-        </span>
+      <template v-if="Array.isArray(buttonText)">
+        <template v-for="key in limit">{{fileList.length}}{{key}}
+          <span class="nf-form-upload-item" :key="key" v-if="key > fileList.length && buttonText.length >= key">
+            <div>
+              <a-icon type="plus" />
+              <div class="ant-upload-text">{{buttonText[key] || buttonText[0]}}</div>
+            </div>
+          </span>
+        </template>
+      </template>
+      <template v-else>
+        <div v-if="fileList.length < limit">
+          <a-icon type="plus" />
+          <div class="ant-upload-text">{{buttonText}}</div>
+        </div>
       </template>
     </a-upload>
     <a-modal :visible="previewVisible" :footer="null" @cancel="previewVisible = false">
@@ -47,8 +55,8 @@ export default {
     },
     // 按钮文案
     buttonText: {
-      type: Array,
-      default: () => []
+      type: [Array, String],
+      // default: () => []
     },
     // 图片数组
     imageList: {
