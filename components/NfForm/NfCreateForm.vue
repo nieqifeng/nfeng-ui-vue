@@ -8,7 +8,7 @@
           :label="item.label"
           :label-col="item.labelCol || { span: 9 }"
           :wrapper-col="item.wrapperCol || { span: 15 }"
-          v-if="item.show === undefined || item.show"
+          v-if="!('show' in item) || item.show"
           :style="item.style"
         >
           <span v-if="item.type === 'text'" v-html="item.value"></span>
