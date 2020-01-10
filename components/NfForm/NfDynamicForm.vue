@@ -22,7 +22,7 @@
         <a-input
           addonAfter="%"
           style="width:120px;"
-          @blur="(e) => { dataSource[index].rate = e.target.value }"
+          @blur="(e) => { dataSource[key].rate = e.target.value }"
           v-decorator="[`${propName}.${key}.rate`, {
             rules: [
               { required: true, message: '请输入实发金额' },

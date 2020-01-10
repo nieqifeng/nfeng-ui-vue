@@ -40,6 +40,17 @@
               :key="option.value"
             >{{option.text}}</a-select-option>
           </a-select>
+          <a-radio-group
+            v-if="item.type === 'radio'"
+            v-decorator="item.decorator"
+            @change="item.change"
+          >
+            <a-radio
+              v-for="option in item.selectOptions"
+              :key="option.value"
+              :value="option.value"
+            >{{option.text}}</a-radio>
+          </a-radio-group>
           <a-checkbox-group v-if="item.type === 'checkbox'" v-decorator="item.decorator">
             <a-checkbox
               v-for="option in item.selectOptions"
@@ -79,7 +90,8 @@ export default {
   },
   props: {
     fieldOptions: {
-      type: Array
+      type: Array,
+      default: () => []
     },
     title: {
       type: String
@@ -150,8 +162,8 @@ export default {
   margin-bottom: 20px;
 }
 .nf-form-box {
-  background:rgba(255,255,255,1);
-  box-shadow:0px 2px 6px 0px rgba(204,204,204,0.4);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 2px 6px 0px rgba(204, 204, 204, 0.4);
   padding: 20px;
 }
 .nf-form-btn {

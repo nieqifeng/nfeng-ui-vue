@@ -14,7 +14,11 @@
     >
       <template v-if="Array.isArray(buttonText)">
         <template v-for="key in limit">
-          <span class="nf-form-upload-item" :key="key" v-if="key > fileList.length && buttonText.length >= key">
+          <span
+            class="nf-form-upload-item"
+            :key="key"
+            v-if="key > fileList.length && buttonText.length >= key"
+          >
             <div>
               <a-icon type="plus" />
               <div class="ant-upload-text">{{buttonText[key] || buttonText[0]}}</div>
@@ -29,7 +33,7 @@
         </div>
       </template>
     </a-upload>
-    <a-modal :visible="previewVisible" :footer="null" @cancel="previewVisible = false">
+    <a-modal :visible="previewVisible" :footer="null" @cancel="previewVisible = false" width="70%">
       <img alt="example" style="width: 100%" :src="previewImage" />
     </a-modal>
   </div>
@@ -163,14 +167,14 @@ export default {
 <style lang="scss">
 .nf-form-upload {
   .ant-upload.ant-upload-select-picture-card {
-    background-color: transparent!important;
-    border: none!important;
-    width: auto!important;
-    height: auto!important;
+    background-color: transparent !important;
+    border: none !important;
+    width: auto !important;
+    height: auto !important;
   }
   .ant-upload.ant-upload-select-picture-card > .ant-upload {
-    display: flex!important;
-    padding: 0!important;
+    display: flex !important;
+    padding: 0 !important;
   }
 }
 .ant-upload-select-picture-card .ant-upload-text {
