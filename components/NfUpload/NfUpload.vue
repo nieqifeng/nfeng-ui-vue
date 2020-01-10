@@ -55,7 +55,7 @@ export default {
     },
     // 按钮文案
     buttonText: {
-      type: [Array, String],
+      type: [Array, String]
       // default: () => []
     },
     // 图片数组

@@ -10,6 +10,10 @@
 
 ## History
 
+-- 1.0.23 --
+
+费率组件beta
+
 -- 1.0.22 --
 
 去掉表单里面的render，template够用了，修复小bug

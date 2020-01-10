@@ -9,6 +9,7 @@ import auth from './auth'
 import filter from './filter'
 import request from './request'
 import components from './components'
+import utils from './utils'
 
 function install(Vue) {
   if (install.installed) return
@@ -44,5 +45,6 @@ export default {
   patterns,
   auth,
   filter,
-  request
+  request,
+  utils
 }

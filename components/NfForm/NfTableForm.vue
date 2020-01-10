@@ -1,58 +1,45 @@
 <template>
   <a-table
     :columns="columns"
+    :rowKey="record => record.id"
     :dataSource="dataSource"
     :pagination="false"
-    bordered>
-    <template
-      :slot="columns[0].dataIndex"
-      slot-scope="text">
-      <span>{{text}}万</span>
+    bordered
+    style="margin: 12px 0;"
+  >
+    <template :slot="columns[0].dataIndex" slot-scope="text">
+      <span>{{text === '' ? '-' : text}}万</span>
     </template>
-    <template
-      :slot="columns[1].dataIndex"
-      slot-scope="text, record, index">
+    <template :slot="columns[1].dataIndex" slot-scope="text, record, index">
       <a-form-item>
         <a-input
           v-if="dataSource.length > index + 1"
           addonAfter="万"
-          class="nf-form-input"
+          style="width: 120px;"
           @blur="e => rightBlurHandle(e, index)"
           v-decorator="[`${propName}.${index}.rightVal`, {
             rules: [{ validator: (rule, value, callback) => validatorRight(rule, value, callback, index) }],
-            initialValue: text}]" />
-        <a-input
-          v-else
-          addonAfter="万"
-          class="nf-form-input"
-          value="不限"
-          disabled />
+            initialValue: text}]"
+        />
+        <span v-else>以上</span>
       </a-form-item>
     </template>
-    <template
-      :slot="columns[2].dataIndex"
-      slot-scope="text, record, index">
+    <template :slot="columns[2].dataIndex" slot-scope="text, record, index">
       <a-form-item>
         <a-input
           addonAfter="%"
-          class="nf-form-input"
+          style="width: 120px;"
           @change="e => rateBlurHandle(e, index)"
           v-decorator="[`${propName}.${index}.rate`, {
             rules: [{ validator: (rule, value, callback) => validatorRate(rule, value, callback, index) }],
-            initialValue: text}]" />
+            initialValue: text}]"
+        />
       </a-form-item>
     </template>
-    <template
-      slot="operation"
-      slot-scope="text, record, index">
+    <template slot="operation" slot-scope="text, record, index">
       <div class="editable-row-operations">
-        <a-button
-          v-if="index === dataSource.length - 1"
-          type="primary"
-          @click="addHandle(index)">新增</a-button>
-        <a-button
-          v-if="index !== 0 && index + 1 === dataSource.length"
-          @click="delHandle(index)">删除</a-button>
+        <a-button v-if="index + 2 === dataSource.length || dataSource.length === 1" type="primary" @click="addHandle(index)">新增</a-button>
+        <a-button v-if="index + 2 === dataSource.length && dataSource.length > 2" @click="delHandle(index)">删除</a-button>
       </div>
     </template>
   </a-table>
@@ -64,24 +51,7 @@ export default {
   props: {
     dataSource: {
       type: Array,
-      default() {
-        return [{
-          key: '0',
-          leftVal: 0,
-          rightVal: 100,
-          rate: 30
-        }, {
-          key: '1',
-          leftVal: 100,
-          rightVal: 200,
-          rate: 40
-        }, {
-          key: '2',
-          leftVal: 200,
-          rightVal: null,
-          rate: 50
-        }]
-      }
+      default: () => []
     },
     propName: {
       type: String,
@@ -118,7 +88,7 @@ export default {
     rightBlurHandle(e, index) {
       const { value } = e.target
       this.dataSource.rightVal = value
-      if (this.dataSource.legnth === (index + 1)) return
+      if (this.dataSource.length === (index + 1)) return
       this.dataSource[index + 1].leftVal = value
     },
     rateBlurHandle(e, index) {
@@ -153,23 +123,25 @@ export default {
       }
     },
     addHandle(index) {
+      if (this.dataSource.length === 1) {
+        index = 0
+      } else if (this.dataSource.length === 2) {
+        index = 1
+      } else {
+        index += 1
+      }
       const { rightVal } = this.dataSource[index]
       this.dataSource.push({
-        key: `${index + 1}`,
-        leftVal: rightVal && rightVal !== 'undefined' ? rightVal : 0,
+        id: `${index + 1}`,
+        leftVal: rightVal !== 'undefined' ? rightVal : '',
         rightVal: '',
         rate: ''
       })
     },
     delHandle(index) {
+      index += 1
       this.dataSource.splice(index, 1)
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.nf-form-input {
-  width: 120px!important;
-}
-</style>

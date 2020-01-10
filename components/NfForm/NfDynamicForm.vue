@@ -1,47 +1,55 @@
 <template>
-  <a-form
-    layout="inline"
-    :form="form">
-    <a-form-item
-      v-for="(item, key) in dataSource"
-      :key="key">
-      <div style="padding: 15px 0;">
-        <span class="nf-form-text">实发金额区间：</span>
-        <span class="nf-form-text"><b>{{item.leftVal}}</b> 万</span>
-        <span class="nf-form-text"> 至 </span>
-        <a-form-item
-          class="nf-form-item">
-          <a-input
-            v-if="dataSource.length > key + 1"
-            addonAfter="万"
-            class="nf-form-input"
-            @blur="e => rightBlurHandle(e, key)"
-            v-decorator="[`${propName}.${key}.rightVal`, {
-              rules: [{ validator: (rule, value, callback) => validatorRight(rule, value, callback, key) }],
-              initialValue: item.rightVal}]" />
-          <a-input
-            v-else
-            addonAfter="万"
-            class="nf-form-input"
-            value="不限"
-            disabled />
-        </a-form-item>
-        <span
-          class="nf-form-text"
-          v-if="parseInt(key, 10) + 2 === dataSource.length">
-          <a-button
-            type="primary"
-            @click="addHandle(key)">追加实发区间</a-button>
-          <a-button
-            v-if="key > 0"
-            @click="delHandle(key)">删除</a-button>
+  <div>
+    <div v-for="(item, key) in dataSource" :key="key" style="display: block;margin-bottom: 12px;">
+      <a-form-item label="实发金额区间：" style="min-width: 320px;">
+        <span class="mr20">
+          <b>{{item.leftVal === '' ? '-' : item.leftVal }}</b> 万
         </span>
-      </div>
+        <span class="mr20">至</span>
+        <a-input
+          v-if="dataSource.length > key + 1 || dataSource.length === 1"
+          addonAfter="万"
+          style="width: 120px;"
+          @blur="e => rightBlurHandle(e, key)"
+          v-decorator="[`${propName}.${key}.rightVal`, {
+            rules: [{ validator: (rule, value, callback) => validatorRight(rule, value, callback, key) }],
+            initialValue: item.rightVal
+          }]"
+        ></a-input>
+        <span v-else class="mr20">以上</span>
+      </a-form-item>
+      <a-form-item v-if="!showStep" label="实发金额：" style="min-width: 210px;">
+        <a-input
+          addonAfter="%"
+          style="width:120px;"
+          @blur="(e) => { dataSource[index].rate = e.target.value }"
+          v-decorator="[`${propName}.${key}.rate`, {
+            rules: [
+              { required: true, message: '请输入实发金额' },
+              { pattern: /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/, message: '请输入正数(小数小于2位)' },
+            ],
+            initialValue: item.rate
+          }]"
+        ></a-input>
+      </a-form-item>
+      <a-form-item>
+        <a-button
+          v-if="key + 2 === dataSource.length || dataSource.length === 1"
+          type="primary"
+          @click="addHandle(key)"
+        >追加实发区间</a-button>
+        <a-button
+          v-if="key + 2 === dataSource.length && dataSource.length > 2"
+          @click="delHandle(key)"
+        >删除</a-button>
+      </a-form-item>
       <nf-table-form
+        v-if="showStep"
         :propName="`${propName}.${key}.${stepPropName}`"
-        :dataSource="item[stepPropName]"></nf-table-form>
-    </a-form-item>
-  </a-form>
+        :dataSource="item[stepPropName]"
+      ></nf-table-form>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -53,21 +61,7 @@ export default {
   props: {
     dataSource: {
       type: Array,
-      default() {
-        return [{
-          key: '0',
-          leftVal: 0,
-          rightVal: 100
-        }, {
-          key: '1',
-          leftVal: 100,
-          rightVal: 200
-        }, {
-          key: '2',
-          leftVal: 200,
-          rightVal: null
-        }]
-      }
+      default: () => []
     },
     propName: {
       type: String,
@@ -76,13 +70,17 @@ export default {
     stepPropName: {
       type: String,
       default: 'totalStepValWithRateDTOList'
+    },
+    showStep: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
     rightBlurHandle(e, index) {
       const { value } = e.target
-      this.dataSource.rightVal = value
-      if (this.dataSource.legnth === (index + 1)) return
+      this.dataSource[index].rightVal = value
+      if (this.dataSource.length === (index + 1)) return
       this.dataSource[index + 1].leftVal = value
     },
     validatorRight(rule, value, callback, index) {
@@ -101,21 +99,30 @@ export default {
       }
     },
     addHandle(index) {
+      if (this.dataSource.length === 1) {
+        index = 0
+      } else if (this.dataSource.length === 2) {
+        index = 1
+      } else {
+        index += 1
+      }
       const { rightVal } = this.dataSource[index]
       const rOjb = {
-        key: `${index + 1}`,
-        leftVal: rightVal && rightVal !== 'undefined' ? rightVal : 0,
-        rightVal: ''
+        id: `${index + 1}`,
+        leftVal: rightVal !== 'undefined' ? rightVal : '',
+        rightVal: '',
+        rate: ''
       }
       rOjb[this.stepPropName] = [{
-        key: `${index + 1}`,
-        leftVal: 0,
+        id: 1,
+        leftVal: '',
         rightVal: '',
         rate: ''
       }]
       this.dataSource.push(rOjb)
     },
     delHandle(index) {
+      index += 1
       this.dataSource.splice(index, 1)
     },
     validateFields(cb) {
@@ -123,20 +130,6 @@ export default {
         cb(err, values)
       })
     }
-  },
-  created() {
-    this.form = this.$form.createForm(this)
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.nf-form-text {
-  text-align: center;
-  display: inline-block;
-  padding-right: 20px;
-}
-.nf-form-input {
-  width: 120px!important;
-}
-</style>
