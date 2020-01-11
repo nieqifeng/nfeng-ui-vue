@@ -38,8 +38,15 @@
     </template>
     <template slot="operation" slot-scope="text, record, index">
       <div class="editable-row-operations">
-        <a-button v-if="index + 2 === dataSource.length || dataSource.length === 1" type="primary" @click="addHandle(index)">新增</a-button>
-        <a-button v-if="index + 2 === dataSource.length && dataSource.length > 2" @click="delHandle(index)">删除</a-button>
+        <a-button
+          v-if="index + 2 === dataSource.length || dataSource.length === 1"
+          type="primary"
+          @click="addHandle(index)"
+        >新增</a-button>
+        <a-button
+          v-if="index + 2 === dataSource.length && dataSource.length > 2"
+          @click="delHandle(index)"
+        >删除</a-button>
       </div>
     </template>
   </a-table>

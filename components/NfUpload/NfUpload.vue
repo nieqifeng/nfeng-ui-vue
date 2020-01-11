@@ -33,7 +33,7 @@
         </div>
       </template>
     </a-upload>
-    <a-modal :visible="previewVisible" :footer="null" @cancel="previewVisible = false" width="70%">
+    <a-modal :visible="previewVisible" :footer="null" @cancel="previewVisible = false" width="70%" centered>
       <img alt="example" style="width: 100%" :src="previewImage" />
     </a-modal>
   </div>

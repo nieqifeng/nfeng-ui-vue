@@ -22,7 +22,7 @@
         <a-input
           addonAfter="%"
           style="width:120px;"
-          @blur="(e) => { dataSource[key].rate = e.target.value }"
+          @blur="(e) => { dataSource[key][childListName][0].rate = e.target.value }"
           v-decorator="[`${propName}.${key}.rate`, {
             rules: [
               { required: true, message: '请输入实发金额' },
@@ -43,21 +43,14 @@
           @click="delHandle(key)"
         >删除</a-button>
       </a-form-item>
-      <nf-table-form
-        v-if="showStep"
-        :propName="`${propName}.${key}.${stepPropName}`"
-        :dataSource="item[stepPropName]"
-      ></nf-table-form>
+      <slot :propName="`${propName}.${key}.${childListName}`" :dataSource="item[childListName]"></slot>
     </div>
   </div>
 </template>
 
 <script>
-import NfTableForm from './NfTableForm.vue'
-
 export default {
   name: 'NfDynamicForm',
-  components: { NfTableForm },
   props: {
     dataSource: {
       type: Array,
@@ -67,7 +60,7 @@ export default {
       type: String,
       default: 'personStepValDTOList'
     },
-    stepPropName: {
+    childListName: {
       type: String,
       default: 'totalStepValWithRateDTOList'
     },
@@ -110,10 +103,9 @@ export default {
       const rOjb = {
         id: `${index + 1}`,
         leftVal: rightVal !== 'undefined' ? rightVal : '',
-        rightVal: '',
-        rate: ''
+        rightVal: ''
       }
-      rOjb[this.stepPropName] = [{
+      rOjb[this.childListName] = [{
         id: 1,
         leftVal: '',
         rightVal: '',

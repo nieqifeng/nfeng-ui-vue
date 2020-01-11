@@ -142,6 +142,7 @@ export default {
     this.form = this.$form.createForm(this, {
       mapPropsToFields: () => {
         const obj = {}
+        console.log(this.fieldOptions)
         this.fieldOptions.forEach((item) => {
           obj[item.decorator[0]] = this.$form.createFormField({
             value: item.value
