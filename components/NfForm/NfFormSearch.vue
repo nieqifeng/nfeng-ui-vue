@@ -52,7 +52,7 @@
 
 <script>
 export default {
-  name: 'NfSearchForm',
+  name: 'NfFormSearch',
   props: {
     fieldOptions: {
       type: Array,

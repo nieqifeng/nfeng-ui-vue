@@ -1,18 +1,22 @@
 <template>
   <div>
-    <div v-for="(item, key) in dataSource" :key="key" style="display: block;margin-bottom: 12px;">
+    <div
+      v-for="(item, index) in dataSource"
+      :key="item.id"
+      style="display: block;margin-bottom: 12px;"
+    >
       <a-form-item label="实发金额区间：" style="min-width: 320px;">
         <span class="mr20">
           <b>{{item.leftVal === '' ? '-' : item.leftVal }}</b> 万
         </span>
         <span class="mr20">至</span>
         <a-input
-          v-if="dataSource.length > key + 1 || dataSource.length === 1"
+          v-if="dataSource.length > index + 1 || dataSource.length === 1"
           addonAfter="万"
           style="width: 120px;"
-          @blur="e => rightBlurHandle(e, key)"
-          v-decorator="[`${propName}.${key}.rightVal`, {
-            rules: [{ validator: (rule, value, callback) => validatorRight(rule, value, callback, key) }],
+          @blur="e => rightBlurHandle(e, index)"
+          v-decorator="[`${propName}.${index}.rightVal`, {
+            rules: [{ validator: (rule, value, callback) => validatorRight(rule, value, callback, index) }],
             initialValue: item.rightVal
           }]"
         ></a-input>
@@ -22,35 +26,39 @@
         <a-input
           addonAfter="%"
           style="width:120px;"
-          @blur="(e) => { dataSource[key][childListName][0].rate = e.target.value }"
-          v-decorator="[`${propName}.${key}.rate`, {
+          @blur="(e) => { dataSource[index][childListName][0].rate = e.target.value }"
+          v-decorator="[`${propName}.${index}.${childListName}.0.rate`, {
             rules: [
               { required: true, message: '请输入实发金额' },
               { pattern: /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/, message: '请输入正数(小数小于2位)' },
             ],
-            initialValue: item.rate
+            initialValue: item[childListName][0].rate
           }]"
         ></a-input>
       </a-form-item>
       <a-form-item>
         <a-button
-          v-if="key + 2 === dataSource.length || dataSource.length === 1"
+          v-if="index + 2 === dataSource.length || dataSource.length === 1"
           type="primary"
-          @click="addHandle(key)"
+          @click="addHandle(index)"
         >追加实发区间</a-button>
         <a-button
-          v-if="key + 2 === dataSource.length && dataSource.length > 2"
-          @click="delHandle(key)"
+          v-if="index + 2 === dataSource.length && dataSource.length > 1"
+          @click="delHandle(index)"
         >删除</a-button>
       </a-form-item>
-      <slot :propName="`${propName}.${key}.${childListName}`" :dataSource="item[childListName]"></slot>
+      <slot
+        :index="index"
+        :propName="`${propName}.${index}.${childListName}`"
+        :dataSource="item[childListName]"
+      ></slot>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'NfDynamicForm',
+  name: 'NfFormDynamic',
   props: {
     dataSource: {
       type: Array,
@@ -107,7 +115,7 @@ export default {
       }
       rOjb[this.childListName] = [{
         id: 1,
-        leftVal: '',
+        leftVal: 0,
         rightVal: '',
         rate: ''
       }]

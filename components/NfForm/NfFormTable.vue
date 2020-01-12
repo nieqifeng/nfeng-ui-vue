@@ -44,7 +44,7 @@
           @click="addHandle(index)"
         >新增</a-button>
         <a-button
-          v-if="index + 2 === dataSource.length && dataSource.length > 2"
+          v-if="index + 2 === dataSource.length && dataSource.length > 1"
           @click="delHandle(index)"
         >删除</a-button>
       </div>
@@ -54,7 +54,7 @@
 
 <script>
 export default {
-  name: 'NfTableForm',
+  name: 'NfFormTable',
   props: {
     dataSource: {
       type: Array,
@@ -94,7 +94,7 @@ export default {
   methods: {
     rightBlurHandle(e, index) {
       const { value } = e.target
-      this.dataSource.rightVal = value
+      this.dataSource[index].rightVal = value
       if (this.dataSource.length === (index + 1)) return
       this.dataSource[index + 1].leftVal = value
     },

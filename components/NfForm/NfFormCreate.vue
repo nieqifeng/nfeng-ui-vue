@@ -13,7 +13,6 @@
         >
           <span v-if="item.type === 'text'" v-html="item.value"></span>
           <slot v-if="item.type === 'slot'" :name="item.decorator[0]"></slot>
-          <!-- <nf-render v-if="item.type === 'render'" :render="item.render"></nf-render> -->
           <a-input
             v-if="item.type === 'input' || item.type === 'number'"
             class="nf-form-input"
@@ -35,10 +34,7 @@
             :filterOption="filterOption"
             v-decorator="item.decorator"
           >
-            <a-select-option
-              v-for="option in item.selectOptions"
-              :key="option.value"
-            >{{option.text}}</a-select-option>
+            <a-select-option v-for="option in item.selectOptions" :key="option.value">{{option.text}}</a-select-option>
           </a-select>
           <a-radio-group
             v-if="item.type === 'radio'"
@@ -65,6 +61,7 @@
             :limit="item.limit"
             :imageList="item.value"
           ></nf-upload>
+          <nf-form-item v-if="item.childList" :fieldOptions="item.childList"></nf-form-item>
         </a-form-item>
       </template>
     </div>
@@ -79,14 +76,12 @@
 <script>
 import NfTitle from '../NfTitle/NfTitle.vue'
 import NfUpload from '../NfUpload/NfUpload.vue'
-// import NfRender from '../NfRender/NfRender.vue'
 
 export default {
-  name: 'NfCreateForm',
+  name: 'NfFormCreate',
   components: {
     NfTitle,
     NfUpload
-    // NfRender
   },
   props: {
     fieldOptions: {
@@ -115,6 +110,7 @@ export default {
   watch: {
     fields(val) {
       const obj = {}
+      console.log(this.form.getFieldsValue())
       Object.keys(this.form.getFieldsValue()).forEach((item) => {
         obj[item] = val[item]
       })
@@ -142,8 +138,8 @@ export default {
     this.form = this.$form.createForm(this, {
       mapPropsToFields: () => {
         const obj = {}
-        console.log(this.fieldOptions)
         this.fieldOptions.forEach((item) => {
+          if (!item.decorator[0]) return
           obj[item.decorator[0]] = this.$form.createFormField({
             value: item.value
           })

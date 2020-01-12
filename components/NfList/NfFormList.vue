@@ -1,9 +1,9 @@
 <template>
   <div>
     <div style="background: white;padding: 20px 30px;margin-top: 18px;">
-      <nf-search-form
+      <nf-form-search
         :fieldOptions="fieldOptions"
-        @submit="submitHandle"></nf-search-form>
+        @submit="submitHandle"></nf-form-search>
       <nf-list
         ref="list"
         :queryFields="queryFields"
@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import NfSearchForm from '../NfForm/NfSearchForm.vue'
+import NfFormSearch from '../NfForm/NfFormSearch.vue'
 import NfList from './NfList.vue'
 
 export default {
   name: 'NfFormList',
-  components: { NfSearchForm, NfList },
+  components: { NfFormSearch, NfList },
   props: {
     fieldOptions: {
       type: Array,
