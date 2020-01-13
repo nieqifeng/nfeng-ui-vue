@@ -22,6 +22,7 @@
             @change="item.change"
             v-decorator="item.decorator"
             :disabled="item.disabled"
+            :maxlength="item.maxlength"
           ></a-input>
           <a-select
             v-if="item.type === 'select'"
