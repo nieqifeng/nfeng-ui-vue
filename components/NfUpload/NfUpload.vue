@@ -89,8 +89,12 @@ export default {
   },
   methods: {
     handlePreview(file) {
-      this.previewImage = file.url || file.thumbUrl
-      this.previewVisible = true
+      if (file.name.includes('.pdf')) {
+        window.open(file.thumbUrl)
+      } else {
+        this.previewImage = file.url || file.thumbUrl
+        this.previewVisible = true
+      }
     },
     handleRemove(file) {
       const index = this.fileList.indexOf(file)
@@ -138,7 +142,7 @@ export default {
       })
     },
     beforeUpload(file) {
-      const typeFile = /[^"]*(\.jpg|\.png|\.bmp|\.jpeg)/
+      const typeFile = /[^"]*(\.jpg|\.png|\.bmp|\.jpeg|\.pdf)/
       const fileName = file.name.toLocaleLowerCase()
       if (!typeFile.test(fileName)) {
         this.$message.error(`${file.name} 文件格式不正确`)
