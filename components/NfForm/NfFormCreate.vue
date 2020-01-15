@@ -1,7 +1,7 @@
 <template>
   <a-form class="nf-form-create" :form="form" @submit="handleSubmit">
-    <div class="nf-form-box" v-if="showBox">
-      <nf-title v-if="title" :title="title"></nf-title>
+    <div class="nf-form-box" v-if="!('showBox' in formOptions) || formOptions.showBox">
+      <nf-title v-if="formOptions.title" :title="formOptions.title"></nf-title>
       <nf-form-item :fieldOptions="fieldOptions">
         <template v-for="item in fieldOptions" :slot="item.decorator[0]">
           <slot :name="item.decorator[0]"></slot>
@@ -9,9 +9,13 @@
       </nf-form-item>
     </div>
     <slot></slot>
-    <div class="nf-form-btn" v-if="showBtn">
+    <div class="nf-form-btn" v-if="!('showBtn' in formOptions) || formOptions.showBtn">
       <slot name="button"></slot>
-      <a-button type="primary" html-type="submit" :loading="submitLoading">{{submitText}}</a-button>
+      <a-button
+        type="primary"
+        html-type="submit"
+        :loading="formOptions.submitLoading"
+      >{{formOptions.submitText || '提交'}}</a-button>
     </div>
   </a-form>
 </template>
@@ -31,24 +35,8 @@ export default {
       type: Array,
       default: () => []
     },
-    title: {
-      type: String
-    },
-    showBox: {
-      type: Boolean,
-      default: true
-    },
-    showBtn: {
-      type: Boolean,
-      default: true
-    },
-    submitText: {
-      type: String,
-      default: '提交'
-    },
-    submitLoading: {
-      type: Boolean,
-      default: false
+    formOptions: {
+      type: Object
     },
     fields: {
       type: Object
@@ -57,7 +45,6 @@ export default {
   watch: {
     fields(val) {
       const obj = {}
-      console.log(this.form.getFieldsValue())
       Object.keys(this.form.getFieldsValue()).forEach((item) => {
         obj[item] = val[item]
       })
