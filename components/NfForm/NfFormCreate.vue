@@ -11,7 +11,7 @@
     <slot></slot>
     <div class="nf-form-btn" v-if="showBtn">
       <slot name="button"></slot>
-      <a-button type="primary" html-type="submit">{{submitText}}</a-button>
+      <a-button type="primary" html-type="submit" :loading="submitLoading">{{submitText}}</a-button>
     </div>
   </a-form>
 </template>
@@ -46,6 +46,10 @@ export default {
       type: String,
       default: '提交'
     },
+    submitLoading: {
+      type: Boolean,
+      default: false
+    },
     fields: {
       type: Object
     }
@@ -63,7 +67,7 @@ export default {
   methods: {
     handleSubmit(e) {
       e.preventDefault()
-      this.form.validateFields((err, values) => {
+      this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           this.$emit('submit', values)
         }

@@ -10,6 +10,10 @@
 
 ## History
 
+-- 1.0.31 --
+
+加上提交按钮loadin，验证函数换成validateFieldsAndScroll
+
 -- 1.0.30 --
 
 formItem加个extra
