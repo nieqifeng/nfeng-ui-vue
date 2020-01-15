@@ -10,6 +10,10 @@
 
 ## History
 
+-- 1.0.30 --
+
+formItem加个extra
+
 -- 1.0.29 --
 
 上传组件支持pdf

@@ -8,6 +8,7 @@
         :wrapper-col="item.wrapperCol || { span: 15 }"
         v-if="!('show' in item) || item.show"
         :style="item.style"
+        :extra="item.extra"
       >
         <span v-if="item.type === 'text'" v-html="item.value"></span>
         <slot v-if="item.type === 'slot'" :name="item.decorator[0]"></slot>
