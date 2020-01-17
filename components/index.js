@@ -1,11 +1,11 @@
-import NfVModal from './NfVModal/NfVModal.vue'
+import NfModal from './NfModal/NfModal.vue'
 import NfTitle from './NfTitle/NfTitle.vue'
 import NfUpload from './NfUpload/NfUpload.vue'
 import NfForm from './NfForm'
 import NfList from './NfList'
 
 const components = [
-  NfVModal,
+  NfModal,
   NfTitle,
   NfUpload,
   ...NfForm,

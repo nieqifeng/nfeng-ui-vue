@@ -1,20 +1,20 @@
-.center {
+.center-box {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-.center-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+// .center-box {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+// }
 
-.space-box {
-  display: flex;
-  justify-content: space-between;
-}
+// .space-box {
+//   display: flex;
+//   justify-content: space-between;
+// }
 
 // .center-page {
 //   width: 100%;
