@@ -1,12 +1,14 @@
 <template>
   <div class="nf-modal-mask" v-if="visible">
-    <div class="nf-modal-body center-box" :style="{ width }">
-      <button class="ant-modal-close" @click="$emit('cancel')">
-        <span class="ant-modal-close-x">
-          <a-icon type="close" />
-        </span>
-      </button>
-      <img :src="imageList.length ? imageList[current - 1] : ''" style="width: 100%;" />
+    <div class="nf-modal" :style="{ width, top }">
+      <div class="nf-modal-body">
+        <button class="ant-modal-close" @click="visible = false">
+          <span class="ant-modal-close-x">
+            <a-icon type="close" />
+          </span>
+        </button>
+        <img :src="imageList.length ? imageList[current - 1] : ''" style="width: 100%;" />
+      </div>
     </div>
     <div class="left" v-if="current !== 1" @click="current -= 1"></div>
     <div class="right" v-if="current !== imageList.length" @click="current += 1"></div>
@@ -26,26 +28,26 @@ export default {
       type: String,
       default: '800px'
     },
-    visible: {
-      type: Boolean,
-      default: false
+    top: {
+      type: String
     }
   },
   data() {
     return {
+      visible: false,
       current: 1
+    }
+  },
+  methods: {
+    open(current) {
+      this.current = current || 1
+      this.visible = true
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.nf-modal-body {
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 24px;
-}
 .nf-modal-mask {
   position: fixed;
   top: 0;
@@ -53,9 +55,25 @@ export default {
   bottom: 0;
   left: 0;
   z-index: 1000;
+  overflow: auto;
+  outline: 0;
+  -webkit-overflow-scrolling: touch;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.65);
   filter: alpha(opacity=50);
+}
+.nf-modal {
+  position: relative;
+  top: 100px;
+  width: auto;
+  margin: 0 auto;
+  padding-bottom: 24px;
+}
+.nf-modal-body {
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 24px;
 }
 .left {
   position: absolute;
