@@ -1,16 +1,14 @@
 <template>
   <div class="clearfix">
     <a-upload
-      listType="picture-card"
-      name="file"
+      :defaultFileList="fileList"
       :fileList="fileList"
-      :beforeUpload="beforeUpload"
-      :remove="handleRemove"
-      :customRequest="handleUpload"
-      @preview="handlePreview"
-      @change="handleChange"
-      :multiple="true"
       :class="{ 'nf-form-upload': Array.isArray(buttonText) }"
+      listType="picture-card"
+      :multiple="true"
+      :customRequest="handleUpload"
+      :remove="handleRemove"
+      @preview="handlePreview"
     >
       <template v-if="Array.isArray(buttonText)">
         <template v-for="key in limit">
@@ -19,33 +17,35 @@
             :key="key"
             v-if="key > fileList.length && buttonText.length >= key"
           >
-            <div>
-              <a-icon type="plus" />
-              <div class="ant-upload-text">{{buttonText[key] || buttonText[0]}}</div>
-            </div>
+            <a-spin :spinning="uploading" tip="Uploading">
+              <div>
+                <a-icon type="plus" />
+                <div class="ant-upload-text">{{buttonText[key] || buttonText[0]}}</div>
+              </div>
+            </a-spin>
           </span>
         </template>
       </template>
       <template v-else>
         <div v-if="fileList.length < limit">
-          <a-icon type="plus" />
-          <div class="ant-upload-text">{{buttonText}}</div>
+          <a-spin :spinning="uploading" tip="Uploading">
+            <a-icon type="plus" />
+            <div class="ant-upload-text">{{buttonText}}</div>
+          </a-spin>
         </div>
       </template>
     </a-upload>
-    <a-modal :visible="previewVisible" :footer="null" @cancel="previewVisible = false" width="70%" centered>
-      <img alt="example" style="width: 100%" :src="previewImage" />
-    </a-modal>
+    <nf-modal ref="modal" :imageList="fileList.map(val => val.url)"></nf-modal>
   </div>
 </template>
 
 <script>
 import Ajax from '../../request'
-
-let intervalPercent = null // 上传进度
+import NfModal from '../NfModal/NfModal.vue'
 
 export default {
   name: 'NfUpload',
+  components: { NfModal },
   props: {
     // 限制上传个数
     limit: {
@@ -60,7 +60,6 @@ export default {
     // 按钮文案
     buttonText: {
       type: [Array, String]
-      // default: () => []
     },
     // 图片数组
     imageList: {
@@ -71,9 +70,8 @@ export default {
   data() {
     return {
       uploadAction: '/api/sysmgr-web/file/upload',
-      previewVisible: false,
-      previewImage: '',
-      fileList: [] // 数据里包含response字段
+      fileList: [], // 数据里包含response字段
+      uploading: false
     }
   },
   watch: {
@@ -89,71 +87,50 @@ export default {
   },
   methods: {
     handlePreview(file) {
-      this.previewImage = file.url || file.thumbUrl
-      this.previewVisible = true
+      const index = this.fileList.indexOf(file)
+      this.$refs.modal.open(index + 1)
     },
     handleRemove(file) {
       const index = this.fileList.indexOf(file)
       const newFileList = this.fileList.slice()
       newFileList.splice(index, 1)
-      this.$emit('change', newFileList.map(val => val.response))
-    },
-    handleChange(file) {
-      this.fileList = file.fileList
-      if (file.file.status === 'done') {
-        this.$emit('change', this.fileList.map(val => val.response))
-      }
+      this.fileList = newFileList
+      this.$emit('change', newFileList)
     },
     handleUpload(file) {
       const formData = new FormData()
       formData.append('targetType', this.type)
       formData.append('fileName', file.file.name)
       formData.append('file', file.file)
-      // 进度条
-      const progress = { percent: 1 }
-      intervalPercent = setInterval(() => {
-        if (progress.percent < 100) {
-          progress.percent += 1
-          file.onProgress(progress)
-        } else {
-          clearInterval(intervalPercent)
-        }
-      }, 50)
+      this.uploading = true
       Ajax.request({
         url: this.uploadAction,
         method: 'post',
         headers: { 'Content-Type': 'multipart/form-data' },
         data: formData
       }).then(({ data }) => {
-        if (intervalPercent) {
-          clearInterval(intervalPercent)
-        }
-        file.onSuccess(data)
-      }, (err) => {
-        if (intervalPercent) {
-          clearInterval(intervalPercent)
-        }
-        file.onError()
-        this.$message.error(err.message)
+        const newFileList = this.fileList.slice()
+        newFileList.push({
+          ...data,
+          uid: newFileList.length,
+          name: data.fileName,
+          status: 'done',
+          url: `/api/sysmgr-web/file/download?downloadCode=${data.downloadCode}`
+        })
+        this.fileList = newFileList
+        this.$emit('change', newFileList)
+        this.uploading = false
+      }, () => {
+        this.uploading = false
+        this.$message.error('upload failed.')
       })
-    },
-    beforeUpload(file) {
-      const typeFile = /[^"]*(\.jpg|\.png|\.bmp|\.jpeg)/
-      const fileName = file.name.toLocaleLowerCase()
-      if (!typeFile.test(fileName)) {
-        this.$message.error(`${file.name} 文件格式不正确`)
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isLt2M) {
-        this.$message.error('文件不能大于2MB!')
-      }
-      return typeFile.test(fileName) && isLt2M
     },
     filterList(list) {
       return list.map((item, index) => {
         const obj = {
           ...item,
           uid: index,
+          name: item.fileName,
           status: 'done',
           url: `/api/sysmgr-web/file/download?downloadCode=${item.downloadCode}`
         }

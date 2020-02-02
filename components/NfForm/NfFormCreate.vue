@@ -36,14 +36,20 @@ export default {
       default: () => []
     },
     formOptions: {
-      type: Object
+      type: Object,
+      default() {
+        return {}
+      },
     },
     fields: {
-      type: Object
+      type: Object,
+      default() {
+        return {}
+      },
     }
   },
   watch: {
-    fields(val) {
+    fields() {
       const obj = {}
       Object.keys(this.form.getFieldsValue()).forEach((item) => {
         obj[item] = val[item]

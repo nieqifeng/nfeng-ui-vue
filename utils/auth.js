@@ -47,5 +47,8 @@ export function removeRoleName() {
 export default {
   getToken,
   setToken,
-  removeToken
+  removeToken,
+  getName,
+  setName,
+  removeName
 }

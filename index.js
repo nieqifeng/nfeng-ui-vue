@@ -1,24 +1,23 @@
 import './scss/index.scss'
-import tool from './tool'
-import tree from './tree'
-import array from './array'
-import jquery from './jquery'
-import conver from './validater/conver'
-import patterns from './validater/patterns'
-import auth from './auth'
+// import tool from './tool'
+// import tree from './tree'
+// import array from './array'
+// import conver from './validater/conver'
+// import patterns from './validater/patterns'
 import filter from './filter'
-import request from './request'
+// import request from './request'
 import components from './components'
 import utils from './utils'
 
 function install(Vue) {
   if (install.installed) return
 
-  Vue.prototype.$tool = tool
-  Vue.prototype.$tree = tree
-  Vue.prototype.$array = array
-  Vue.prototype.$jquery = jquery
-  Vue.prototype.$conver = conver
+  // Vue.prototype.$tool = tool
+  // Vue.prototype.$tree = tree
+  // Vue.prototype.$array = array
+  // Vue.prototype.$jquery = jquery
+  // Vue.prototype.$conver = conver
+  Vue.prototype.$utils = utils
 
   // 注册全局filter
   Object.keys(filter).forEach((key) => {
@@ -36,15 +35,17 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 export default {
-  install,
-  tool,
-  tree,
-  array,
-  jquery,
-  conver,
-  patterns,
-  auth,
-  filter,
-  request,
+  install
+}
+
+export {
   utils
+  // tool,
+  // tree,
+  // array,
+  // jquery,
+  // conver,
+  // patterns,
+  // filter,
+  // request,
 }

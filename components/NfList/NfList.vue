@@ -3,18 +3,21 @@
     <a-tabs
       class="tabs-noborder"
       :defaultActiveKey="tabPanes.legnth ? tabPanes[0].key : ''"
-      @change="callback">
-        <a-tab-pane
-          v-for="pane in tabPanes"
-          :tab="pane.title"
-          :key="pane.key"
-          :closable="pane.closable"></a-tab-pane>
-        <a-button
-          slot="tabBarExtraContent"
-          type="primary"
-          v-if="btnText"
-          @click="$emit('btnClick')">{{btnText}}</a-button>
-      </a-tabs>
+      @change="callback"
+    >
+      <a-tab-pane
+        v-for="pane in tabPanes"
+        :tab="pane.title"
+        :key="pane.key"
+        :closable="pane.closable"
+      ></a-tab-pane>
+      <a-button
+        slot="tabBarExtraContent"
+        type="primary"
+        v-if="btnText"
+        @click="$emit('btnClick')"
+      >{{btnText}}</a-button>
+    </a-tabs>
     <a-table
       :columns="tableColumns"
       :dataSource="tableList"
@@ -96,3 +99,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.nf-list {
+  background-color: white;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+</style>

@@ -65,10 +65,10 @@
 </template>
 
 <script>
-// import NfUpload from '../NfUpload/NfUpload.vue'
+import NfUpload from '../NfUpload/NfUpload.vue'
 
 export default {
-  // components: { NfUpload },
+  components: { NfUpload },
   props: {
     fieldOptions: {
       type: Array,

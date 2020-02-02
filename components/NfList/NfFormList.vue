@@ -1,19 +1,16 @@
 <template>
   <div>
-    <div style="background: white;padding: 20px 30px;margin-top: 18px;">
-      <nf-form-search
-        :fieldOptions="fieldOptions"
-        @submit="submitHandle"></nf-form-search>
-      <nf-list
-        ref="list"
-        :queryFields="queryFields"
-        :queryFunction="queryFunction"
-        :tableColumns="tableColumns"
-        :tabPanes="tabPanes"
-        :tabChange="tabChange"
-        :btnText="btnText"
-        @btnClick="$emit('btnClick')"></nf-list>
-    </div>
+    <nf-form-search :fieldOptions="fieldOptions" @submit="submitHandle"></nf-form-search>
+    <nf-list
+      ref="list"
+      :queryFields="queryFields"
+      :queryFunction="queryFunction"
+      :tableColumns="tableColumns"
+      :tabPanes="tabPanes"
+      :tabChange="tabChange"
+      :btnText="btnText"
+      @btnClick="$emit('btnClick')"
+    ></nf-list>
   </div>
 </template>
 
