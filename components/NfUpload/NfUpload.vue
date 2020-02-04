@@ -87,8 +87,13 @@ export default {
   },
   methods: {
     handlePreview(file) {
-      const index = this.fileList.indexOf(file)
-      this.$refs.modal.open(index + 1)
+      const { name, url } = file
+      if (name.includes('pdf')) {
+        window.open(url)
+      } else {
+        const index = this.fileList.indexOf(file)
+        this.$refs.modal.open(index + 1)
+      }
     },
     handleRemove(file) {
       const index = this.fileList.indexOf(file)
@@ -115,7 +120,7 @@ export default {
           uid: newFileList.length,
           name: data.fileName,
           status: 'done',
-          url: `/api/sysmgr-web/file/download?downloadCode=${data.downloadCode}`
+          url: `/api/sysmgr-web/file/file-scan?downloadCode=${data.downloadCode}`
         })
         this.fileList = newFileList
         this.$emit('change', newFileList)
@@ -132,7 +137,7 @@ export default {
           uid: index,
           name: item.fileName,
           status: 'done',
-          url: `/api/sysmgr-web/file/download?downloadCode=${item.downloadCode}`
+          url: `/api/sysmgr-web/file/file-scan?downloadCode=${item.downloadCode}`
         }
         return obj
       })

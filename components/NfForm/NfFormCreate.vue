@@ -39,17 +39,17 @@ export default {
       type: Object,
       default() {
         return {}
-      },
+      }
     },
     fields: {
       type: Object,
       default() {
         return {}
-      },
+      }
     }
   },
   watch: {
-    fields() {
+    fields(val) {
       const obj = {}
       Object.keys(this.form.getFieldsValue()).forEach((item) => {
         obj[item] = val[item]

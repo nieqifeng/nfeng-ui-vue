@@ -10,6 +10,10 @@
 
 ## History
 
+-- 1.0.38 --
+
+修复些小bug，加上PDF预览
+
 -- 1.0.37 --
 
 upload修改 createForm修改字段更新方式 还有一些utils方法
