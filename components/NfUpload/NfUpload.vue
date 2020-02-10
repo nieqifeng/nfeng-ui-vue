@@ -17,21 +17,17 @@
             :key="key"
             v-if="key > fileList.length && buttonText.length >= key"
           >
-            <a-spin :spinning="uploading" tip="Uploading">
-              <div>
-                <a-icon type="plus" />
-                <div class="ant-upload-text">{{buttonText[key] || buttonText[0]}}</div>
-              </div>
-            </a-spin>
+            <div>
+              <a-icon type="plus" />
+              <div class="ant-upload-text">{{buttonText[key] || buttonText[0]}}</div>
+            </div>
           </span>
         </template>
       </template>
       <template v-else>
         <div v-if="fileList.length < limit">
-          <a-spin :spinning="uploading" tip="Uploading">
-            <a-icon type="plus" />
-            <div class="ant-upload-text">{{buttonText}}</div>
-          </a-spin>
+          <a-icon type="plus" />
+          <div class="ant-upload-text">{{buttonText}}</div>
         </div>
       </template>
     </a-upload>
@@ -42,6 +38,8 @@
 <script>
 import Ajax from '../../request'
 import NfModal from '../NfModal/NfModal.vue'
+
+let intervalPercent = null // 上传进度
 
 export default {
   name: 'NfUpload',
@@ -70,8 +68,7 @@ export default {
   data() {
     return {
       uploadAction: '/api/sysmgr-web/file/upload',
-      fileList: [], // 数据里包含response字段
-      uploading: false
+      fileList: [] // 数据里包含response字段
     }
   },
   watch: {
@@ -107,26 +104,46 @@ export default {
       formData.append('targetType', this.type)
       formData.append('fileName', file.file.name)
       formData.append('file', file.file)
-      this.uploading = true
+
+      const newFileList = this.fileList.slice()
+      const uid = newFileList.length ? newFileList[newFileList.length - 1].uid + 1 : 0
+      const newFile = {
+        uid,
+        name: file.file.name,
+        status: 'uploading',
+        percent: 1
+      }
+      newFileList.push(newFile)
+      this.fileList = newFileList
+
+      // 进度条
+      intervalPercent = setInterval(() => {
+        if (newFile.percent < 100) {
+          newFile.percent += 1
+        } else {
+          clearInterval(intervalPercent)
+        }
+      }, 50)
+
       Ajax.request({
         url: this.uploadAction,
         method: 'post',
         headers: { 'Content-Type': 'multipart/form-data' },
         data: formData
       }).then(({ data }) => {
-        const newFileList = this.fileList.slice()
-        newFileList.push({
-          ...data,
-          uid: newFileList.length,
-          name: data.fileName,
-          status: 'done',
-          url: `/api/sysmgr-web/file/file-scan?downloadCode=${data.downloadCode}`
+        this.fileList = this.fileList.map((item) => {
+          if (item.uid === uid) {
+            item = {
+              ...item,
+              ...data,
+              url: `/api/sysmgr-web/file/file-scan?downloadCode=${data.downloadCode}`,
+              status: 'done'
+            }
+          }
+          return item
         })
-        this.fileList = newFileList
-        this.$emit('change', newFileList)
-        this.uploading = false
+        this.$emit('change', this.fileList)
       }, () => {
-        this.uploading = false
         this.$message.error('upload failed.')
       })
     },
