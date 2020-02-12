@@ -57,6 +57,7 @@
           :buttonText="item.buttonText"
           :limit="item.limit"
           :imageList="item.value"
+          :multiple="item.multiple"
         ></nf-upload>
         <nf-form-item v-if="item.childList" :fieldOptions="item.childList"></nf-form-item>
       </a-form-item>
@@ -72,8 +73,8 @@ export default {
   props: {
     fieldOptions: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   methods: {
     filterOption(input, option) {
@@ -82,7 +83,7 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       )
-    }
-  }
+    },
+  },
 }
 </script>

@@ -5,7 +5,7 @@
       :fileList="fileList"
       :class="{ 'nf-form-upload': Array.isArray(buttonText) }"
       listType="picture-card"
-      :multiple="true"
+      :multiple="multiple"
       :customRequest="handleUpload"
       :remove="handleRemove"
       @preview="handlePreview"
@@ -38,8 +38,10 @@
 <script>
 import Ajax from '../../request'
 import NfModal from '../NfModal/NfModal.vue'
+import defaultThumbUrl from '../../image/pdf2.png'
 
 let intervalPercent = null // 上传进度
+const notImgFile = /[^"]*(\.pdf)/
 
 export default {
   name: 'NfUpload',
@@ -48,27 +50,32 @@ export default {
     // 限制上传个数
     limit: {
       type: Number,
-      default: 1
+      default: 1,
     },
     // 上传类型
     type: {
       type: String,
-      default: 'recharge_voucher_img'
+      default: 'recharge_voucher_img',
     },
     // 按钮文案
     buttonText: {
-      type: [Array, String]
+      type: [Array, String],
     },
     // 图片数组
     imageList: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
+    // 支持多选
+    multiple: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       uploadAction: '/api/sysmgr-web/file/upload',
-      fileList: [] // 数据里包含response字段
+      fileList: [], // 数据里包含response字段
     }
   },
   watch: {
@@ -76,8 +83,8 @@ export default {
       handler(val) {
         if (val.length) this.fileList = this.filterList(val)
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   created() {
     if (this.imageList.length) this.fileList = this.filterList(this.imageList)
@@ -111,7 +118,10 @@ export default {
         uid,
         name: file.file.name,
         status: 'uploading',
-        percent: 1
+        percent: 1,
+      }
+      if (notImgFile.test(file.file.name)) {
+        newFile.thumbUrl = defaultThumbUrl
       }
       newFileList.push(newFile)
       this.fileList = newFileList
@@ -129,7 +139,7 @@ export default {
         url: this.uploadAction,
         method: 'post',
         headers: { 'Content-Type': 'multipart/form-data' },
-        data: formData
+        data: formData,
       }).then(({ data }) => {
         this.fileList = this.fileList.map((item) => {
           if (item.uid === uid) {
@@ -137,7 +147,7 @@ export default {
               ...item,
               ...data,
               url: `/api/sysmgr-web/file/file-scan?downloadCode=${data.downloadCode}`,
-              status: 'done'
+              status: 'done',
             }
           }
           return item
@@ -149,17 +159,21 @@ export default {
     },
     filterList(list) {
       return list.map((item, index) => {
+        const imgUrl = `/api/sysmgr-web/file/download?downloadCode=${item.downloadCode}`
+        // 判断是否是图片
+        const isImg = !notImgFile.test(item.fileName.toLocaleLowerCase())
         const obj = {
           ...item,
           uid: index,
           name: item.fileName,
           status: 'done',
-          url: `/api/sysmgr-web/file/file-scan?downloadCode=${item.downloadCode}`
+          url: isImg ? imgUrl : defaultThumbUrl,
+          // url: imgUrl,
         }
         return obj
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -176,9 +190,36 @@ export default {
     padding: 0 !important;
   }
 }
-.ant-upload-select-picture-card .ant-upload-text {
-  margin-top: 8px;
-  color: #666;
+.ant-upload-list-picture-card {
+  .ant-upload-list-item {
+    width: 200px;
+    height: 120px;
+    .ant-upload-list-item-thumbnail {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        width: auto;
+        height: auto;
+      }
+    }
+    .ant-upload-list-item-name {
+      display: block;
+    }
+    .ant-upload-list-item-uploading-text {
+      text-align: center;
+    }
+  }
+}
+.ant-upload-select-picture-card {
+  &.ant-upload-select-picture-card {
+    width: 200px;
+    height: 120px;
+  }
+  .ant-upload-text {
+    margin-top: 8px;
+    color: #999;
+  }
 }
 .nf-form-upload-item {
   width: 200px;
