@@ -79,7 +79,7 @@ export default {
     left: 40px;
     width: 80px;
     height: 80px;
-    background-image: url(../../assets/left.png);
+    background-image: url('../../assets/left.png');
     background-size: cover;
     cursor: pointer;
   }
@@ -89,7 +89,7 @@ export default {
     right: 40px;
     width: 80px;
     height: 80px;
-    background-image: url(../../assets/right.png);
+    background-image: url('../../assets/right.png');
     background-size: cover;
     cursor: pointer;
   }
