@@ -194,12 +194,16 @@ export default {
     width: 200px;
     height: 120px;
     .ant-upload-list-item-thumbnail {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      // display: flex;
+      // justify-content: center;
+      // align-items: center;
+      width: auto;
+      height: auto;
       img {
         width: auto;
         height: auto;
+        max-height: 102px;
+        margin: 0 auto;
       }
     }
     .ant-upload-list-item-name {
@@ -209,6 +213,9 @@ export default {
       text-align: center;
     }
   }
+}
+.ant-upload-list-item-info > span {
+  display: inline;
 }
 .ant-upload-select-picture-card {
   &.ant-upload-select-picture-card {
