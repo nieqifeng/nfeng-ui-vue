@@ -1,6 +1,10 @@
 <template>
   <div>
-    <nf-form-search :fieldOptions="fieldOptions" @submit="submitHandle"></nf-form-search>
+    <nf-form-search :fieldOptions="fieldOptions" @submit="submitHandle">
+      <template slot="button">
+        <slot name="button"></slot>
+      </template>
+    </nf-form-search>
     <nf-list
       ref="list"
       :queryFields="queryFields"
