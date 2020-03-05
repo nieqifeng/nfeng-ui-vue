@@ -90,9 +90,9 @@ export default {
   },
   methods: {
     handlePreview(file) {
-      const { name, url } = file
+      const { name, downloadCode } = file
       if (name.includes('pdf')) {
-        window.open(url)
+        window.open(`/api/sysmgr-web/file/file-scan?downloadCode=${downloadCode}`)
       } else {
         const index = this.fileList.indexOf(file)
         this.$refs.modal.open(index + 1)
