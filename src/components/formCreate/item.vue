@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import NfUpload from '../upload/upload.vue'
+import NfUpload from '../upload'
 
 export default {
   components: { NfUpload },

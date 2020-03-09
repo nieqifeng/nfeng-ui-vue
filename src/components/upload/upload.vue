@@ -31,7 +31,7 @@
         </div>
       </template>
     </a-upload>
-    <nf-modal ref="modal" :imageList="fileList.map(val => val.url)"></nf-modal>
+    <nf-modal :imageList="fileList.map(val => val.url)" :showModal.sync="showModal" :activeIndex.sync="activeIndex"></nf-modal>
   </div>
 </template>
 
@@ -75,6 +75,8 @@ export default {
     return {
       uploadAction: '/api/sysmgr-web/file/upload',
       fileList: [], // 数据里包含response字段
+      showModal: false,
+      activeIndex: 0,
     }
   },
   watch: {
@@ -94,8 +96,8 @@ export default {
       if (name.includes('pdf')) {
         window.open(`/api/sysmgr-web/file/file-scan?downloadCode=${downloadCode}`)
       } else {
-        const index = this.fileList.indexOf(file)
-        this.$refs.modal.open(index + 1)
+        this.activeIndex = this.fileList.indexOf(file)
+        this.showModal = true
       }
     },
     handleRemove(file) {
