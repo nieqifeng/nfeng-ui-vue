@@ -25,14 +25,14 @@ Vue.use(NfengUI)
 ```html
 <nf-upload :buttonText="['Upload']"></nf-upload>
 ```
-```
+
 #### API
 | 参数 | 说明 | 类型| 默认值 | 可选值 |
-|-----|:----------|:------|:------------|:--------|
+| ---- | ---- | ---- | ---- | ---- |
 | buttonText | 按钮文案 |  Array,String | - | - |
 | imageList | 图片数组 |  Array | [] | - |
 | multiple | 支持多选 |  Boolean | false | - |
-```
+
 
 
 ## 组件-download下载
@@ -41,10 +41,10 @@ Vue.use(NfengUI)
 <!-- 导出进度条 -->
 <nf-download :showModal.sync="showProgress" :progress="downloadProgress" :msg="downloadMsg" :downloadState="downloadState" @cancelHandle="cancelHandle"></nf-download>
 ```
-```
+
 #### API
 | 参数 | 说明 | 类型| 默认值 | 可选值 |
-|-----|:----------|:------|:------------|:--------|
+| ---- | ---- | ---- | ---- | ---- |
 | showModal | 弹层显示 |  Boolean | false | true,false |
 | progress | 进度条百分比 |  Number | - | - |
 | downloadMsg | 弹层信息 |  String | - | - |
@@ -52,5 +52,5 @@ Vue.use(NfengUI)
 
 #### 事件
 | 事件名称 | 说明 | 回调参数 |
+| ---- | ---- | ---- |
 | cancelHandle | 点击遮罩层或右上角叉或取消按钮的回调 |  function(e) |
-```
