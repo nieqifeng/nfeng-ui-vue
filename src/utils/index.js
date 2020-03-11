@@ -1,4 +1,5 @@
 import url from './url'
+import pattern from './pattern'
 
 /**
  * 返回一个lower - upper之间的随机数
@@ -18,6 +19,7 @@ function trim(str) {
 
 export default {
   ...url,
+  ...pattern,
   random,
   trim,
 }

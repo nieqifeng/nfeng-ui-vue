@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import { isPosNum } from '../../utils/pattern'
+
 export default {
   props: {
     dataSource: {
@@ -103,11 +105,10 @@ export default {
     },
     validatorRight(rule, value, callback, index) {
       const { leftVal } = this.dataSource[index]
-      const pattern = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
       if (value === '') {
         callback('请输入月收入上限')
-      } else if (!pattern.test(value)) {
-        callback('请输入正数(小数小于2位)')
+      } else if (!isPosNum(value)) {
+        callback('请输入正数(小数小于4位)')
       } else if (leftVal === null) {
         callback()
       } else if (parseFloat(leftVal, 10) >= parseFloat(value, 10)) {
@@ -117,11 +118,10 @@ export default {
       }
     },
     validatorRate(rule, value, callback) {
-      const pattern = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
       if (value === '') {
         callback('请输入结算比例')
-      } else if (!pattern.test(value)) {
-        callback('请输入正数(小数小于2位)')
+      } else if (!isPosNum(value)) {
+        callback('请输入正数(小数小于4位)')
       } else if (parseFloat(value, 10) > 100) {
         callback('结算比例不能大于100')
       } else {

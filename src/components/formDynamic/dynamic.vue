@@ -28,10 +28,7 @@
           style="width:120px;"
           @blur="(e) => { dataSource[index][childListName][0].rate = e.target.value }"
           v-decorator="[`${propName}.${index}.${childListName}.0.rate`, {
-            rules: [
-              { required: true, message: '请输入实发金额' },
-              { pattern: /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/, message: '请输入正数(小数小于2位)' },
-            ],
+            rules: [{ validator: (rule, value, callback) => validatorRate(rule, value, callback) }],
             initialValue: item[childListName][0].rate
           }]"
         ></a-input>
@@ -57,6 +54,8 @@
 </template>
 
 <script>
+import { isPosNum } from '../../utils/pattern'
+
 export default {
   props: {
     dataSource: {
@@ -85,15 +84,23 @@ export default {
     },
     validatorRight(rule, value, callback, index) {
       const { leftVal } = this.dataSource[index]
-      const pattern = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
       if (value === '') {
         callback('请输入实发金额区间')
-      } else if (!pattern.test(value)) {
-        callback('请输入正数(小数小于2位)')
+      } else if (!isPosNum(value)) {
+        callback('请输入正数(小数小于4位)')
       } else if (leftVal === null) {
         callback()
       } else if (parseFloat(leftVal, 10) >= parseFloat(value, 10)) {
         callback('实发金额区间上限必须大于下限')
+      } else {
+        callback()
+      }
+    },
+    validatorRate(rule, value, callback) {
+      if (value === '') {
+        callback('请输入实发金额')
+      } else if (!isPosNum(value)) {
+        callback('请输入正数(小数小于4位)')
       } else {
         callback()
       }
