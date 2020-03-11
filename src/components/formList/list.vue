@@ -80,8 +80,8 @@ export default {
           return item
         })
         this.pagination.total = total
-        console.log('done')
         this.loading = false
+        this.$emit('done', list)
       })
     },
     // 分页

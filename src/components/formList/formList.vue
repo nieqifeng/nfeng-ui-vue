@@ -13,6 +13,7 @@
       :tabPanes="tabPanes"
       :tabChange="tabChange"
       :btnText="btnText"
+      @done="list => $emit('done', list)"
       @btnClick="$emit('btnClick')"
     ></nf-list>
   </div>

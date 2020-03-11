@@ -8,7 +8,7 @@
 * src/utils 工具函数
 
 ## build
-* npm run build-bundle
+* npm run build
 
 ## quickstart
 ```js
