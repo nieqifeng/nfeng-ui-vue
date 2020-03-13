@@ -1,3 +1,3 @@
-import Dynamic from './dynamic.vue'
+import FormDynamic from './formDynamic.vue'
 
-export default Dynamic
+export default FormDynamic

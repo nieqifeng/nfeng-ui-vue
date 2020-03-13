@@ -42,9 +42,9 @@
       </div>
       <a-form-item>
         <a-button type="primary" html-type="submit">查询</a-button>
-        <a-button :style="{ marginLeft: '20px' }" @click="form.resetFields(), $emit('reset')">清空</a-button>
-        <slot name="button"></slot>
-        <a v-if="count" :style="{ marginLeft: '20px', fontSize: '12px' }" @click="expand = !expand">
+        <a-button class="btn" @click="form.resetFields(), $emit('reset')">清空</a-button>
+        <a-button v-if="exportBtn" :disabled="disabled" class="btn" @click="$emit('export')">导出</a-button>
+        <a v-if="count" class="btn" @click="expand = !expand">
           {{ expand ? '展开' : '收起' }}
           <a-icon :type="expand ? 'down' : 'up'" />
         </a>
@@ -61,6 +61,14 @@ export default {
       default() {
         return []
       }
+    },
+    exportBtn: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -74,15 +82,15 @@ export default {
   },
   created() {
     this.form = this.$form.createForm(this, {
-      mapPropsToFields: () => {
-        const obj = {}
-        this.fieldOptions.forEach((item) => {
-          obj[item.decorator[0]] = this.$form.createFormField({
-            value: item.value
-          })
-        })
-        return obj
-      },
+      // mapPropsToFields: () => {
+      //   const obj = {}
+      //   this.fieldOptions.forEach((item) => {
+      //     obj[item.decorator[0]] = this.$form.createFormField({
+      //       value: item.value
+      //     })
+      //   })
+      //   return obj
+      // },
       onValuesChange: (_, values) => {
         this.$emit('change', values)
       }
@@ -132,6 +140,9 @@ export default {
 .hide-wrap {
   height: 103px;
   overflow: hidden;
+}
+.btn:not(:first-child) {
+  margin-left: 20px;
 }
 </style>
 

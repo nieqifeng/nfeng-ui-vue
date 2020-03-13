@@ -1,32 +1,53 @@
 <template>
   <div>
-    <nf-form-search :fieldOptions="fieldOptions" @submit="submitHandle">
-      <template slot="button">
-        <slot name="button"></slot>
-      </template>
-    </nf-form-search>
-    <nf-list
-      ref="list"
-      :queryFields="queryFields"
-      :queryFunction="queryFunction"
-      :tableColumns="tableColumns"
-      :tabPanes="tabPanes"
-      :tabChange="tabChange"
-      :btnText="btnText"
-      @done="list => $emit('done', list)"
-      @btnClick="$emit('btnClick')"
-    ></nf-list>
+    <nf-form-search
+      :fieldOptions="fieldOptions"
+      :exportBtn="exportBtn"
+      :disabled="tableList.length === 0"
+      @submit="(values) => { $emit('searchSubmit', values), getList() }"
+      @export="$emit('export')"
+    ></nf-form-search>
+    <div class="nf-list">
+      <a-tabs
+        class="tabs-noborder"
+        :defaultActiveKey="tabPanes.legnth ? tabPanes[0].key : ''"
+        @change="(key) => { $emit('tabChange', key), getList() }"
+      >
+        <a-tab-pane
+          v-for="pane in tabPanes"
+          :tab="pane.title"
+          :key="pane.key"
+          :closable="pane.closable"
+        ></a-tab-pane>
+        <template slot="tabBarExtraContent">
+          <slot name="tabBarExtraContent"></slot>
+        </template>
+      </a-tabs>
+      <a-table
+        :columns="tableColumns"
+        :dataSource="tableList"
+        :loading="loading"
+        :pagination="pagination"
+        :rowKey="record => record.rowKey"
+        @change="tableChange"
+      ></a-table>
+    </div>
   </div>
 </template>
 
 <script>
-import NfFormSearch from '../formSearch/formSearch.vue'
-import NfList from './list.vue'
+import NfFormSearch from '../formSearch'
 
 export default {
-  components: { NfFormSearch, NfList },
+  components: { NfFormSearch },
   props: {
     fieldOptions: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
+    tabPanes: {
       type: Array,
       default() {
         return []
@@ -41,26 +62,57 @@ export default {
     tableColumns: {
       type: Array
     },
-    tabPanes: {
-      type: Array,
-      default() {
-        return []
-      }
-    },
-    tabChange: {
-      type: Function
-    },
-    btnText: {
-      type: String
+    exportBtn: {
+      type: Boolean
+    }
+  },
+  data() {
+    return {
+      // 表格分页的配置
+      pagination: {
+        size: 'small',
+        showQuickJumper: true,
+        showSizeChanger: true,
+        pageSize: 10,
+        total: 0,
+        showTotal: total => `共 ${total} 条`
+      },
+      // 表格数据
+      tableList: [],
+      loading: true
     }
   },
   methods: {
-    submitHandle(values) {
-      this.$emit('submit', values)
-    },
+    // 查询
     getList() {
-      this.$refs.list.getList()
-    }
+      this.loading = true
+      this.queryFunction(this.queryFields).then(({ list, total }) => {
+        this.tableList = list.map((item, key) => {
+          item.rowKey = key
+          return item
+        })
+        this.pagination.total = total
+        this.loading = false
+      })
+    },
+    // 分页
+    tableChange(pagination) {
+      this.queryFields.page = pagination.current
+      this.queryFields.pageSize = pagination.pageSize
+      this.getList()
+    },
+  },
+  mounted() {
+    this.getList()
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.nf-list {
+  background-color: white;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+</style>

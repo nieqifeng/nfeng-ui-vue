@@ -1,3 +1,3 @@
-import Table from './table.vue'
+import FormTable from './formTable.vue'
 
-export default Table
+export default FormTable
