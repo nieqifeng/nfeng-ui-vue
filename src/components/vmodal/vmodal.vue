@@ -32,6 +32,16 @@ export default {
       default: 0
     }
   },
+  watch: {
+    activeIndex(val) {
+      this.current = val
+    }
+  },
+  data() {
+    return {
+      current: 1
+    }
+  },
   computed: {
     visible: {
       get() {
@@ -41,14 +51,14 @@ export default {
         this.$emit('update:showModal', val)
       }
     },
-    current: {
-      get() {
-        return this.activeIndex
-      },
-      set(val) {
-        this.$emit('update:activeIndex', val)
-      }
-    },
+    // current: {
+    //   get() {
+    //     return this.activeIndex
+    //   },
+    //   set(val) {
+    //     this.$emit('update:activeIndex', val)
+    //   }
+    // },
   }
 }
 </script>
