@@ -18,5 +18,5 @@ function install(Vue) {
 if (typeof window !== 'undefined' && window.Vue) {
   install(window.Vue)
 }
-export { utils }
+export { install, utils }
 export default { install }

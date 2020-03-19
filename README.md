@@ -118,12 +118,18 @@ export default {
 多张图片上传只需传入按钮文本为数组
 
 ```html
-<nf-upload :buttonText="['Upload']"></nf-upload>
+<nf-upload
+  v-decorator="['approveUploadFileIds']"
+  buttonText="可以同时上传多张"
+  multiple
+></nf-upload>
 ```
 
 #### API
 | 参数 | 说明 | 类型| 默认值 | 可选值 |
 | ---- | ---- | ---- | ---- | ---- |
+| limit | 限制上传个数 | Number | - | - |
+| type | 上传类型 | String | 'recharge_voucher_img' | - |
 | buttonText | 按钮文案 |  Array,String | - | - |
 | imageList | 图片数组 |  Array | [] | - |
 | multiple | 支持多选 |  Boolean | false | - |

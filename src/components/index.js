@@ -1,5 +1,6 @@
 import Title from './title'
 import Vmodal from './vmodal'
+import Upload from './upload'
 import Download from './download'
 import FormSearch from './formSearch'
 import FormCreate from './formCreate'
@@ -10,6 +11,7 @@ import FormTable from "./formTable";
 const components = {
   'nf-title': Title,
   'nf-modal': Vmodal,
+  'nf-upload': Upload,
   'nf-download': Download,
   'nf-form-search': FormSearch,
   'nf-form-create': FormCreate,
