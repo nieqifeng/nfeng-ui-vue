@@ -6,6 +6,7 @@
       :class="{ 'nf-form-upload': Array.isArray(buttonText) }"
       listType="picture-card"
       :multiple="multiple"
+      :accept="accept"
       :customRequest="handleUpload"
       :remove="handleRemove"
       @preview="handlePreview"
@@ -36,11 +37,11 @@
 </template>
 
 <script>
-import Ajax from '../../utils/request'
+// import Ajax from '../../utils/request'
 import NfModal from '../vmodal/vmodal.vue'
 import defaultThumbUrl from '../../assets/pdf2.png'
 
-let intervalPercent = null // 上传进度
+// let intervalPercent = null // 上传进度
 const notImgFile = /[^"]*(\.pdf)/
 
 export default {
@@ -70,6 +71,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    uploadFunction: {
+      type: Function
+    },
+    accept: {
+      type: String,
+      default: '.pdf,.jpg,.png'
+    }
   },
   data() {
     return {
@@ -82,7 +90,7 @@ export default {
   watch: {
     imageList: {
       handler(val) {
-        if (val.length) this.fileList = this.filterList(val)
+        this.fileList = val.length ? this.filterList(val) : []
       },
       deep: true,
     },
@@ -128,35 +136,63 @@ export default {
       this.fileList = newFileList
 
       // 进度条
-      intervalPercent = setInterval(() => {
-        if (newFile.percent < 100) {
-          newFile.percent += 1
-        } else {
-          clearInterval(intervalPercent)
-        }
-      }, 50)
+      // intervalPercent = setInterval(() => {
+      //   if (newFile.percent < 100) {
+      //     newFile.percent += 1
+      //   } else {
+      //     clearInterval(intervalPercent)
+      //   }
+      // }, 50)
 
-      Ajax.request({
-        url: this.uploadAction,
-        method: 'post',
-        headers: { 'Content-Type': 'multipart/form-data' },
-        data: formData,
-      }).then(({ data }) => {
+      this.uploadFunction(file, this.handleProgress).then((data) => {
+        console.log(data)
+        const downloadCode = data && data.downloadCode
+        // const url = `/api/sysmgr-web/file/file-scan?downloadCode=${downloadCode}`
+        const url = `/api/sysmgr-web/file/download?downloadCode=${downloadCode}`
         this.fileList = this.fileList.map((item) => {
           if (item.uid === uid) {
             item = {
               ...item,
               ...data,
-              url: `/api/sysmgr-web/file/file-scan?downloadCode=${data.downloadCode}`,
+              url,
               status: 'done',
             }
           }
           return item
         })
         this.$emit('change', this.fileList)
-      }, () => {
+      }, (err) => {
+        console.log(err)
+        newFile.status = 'error'
         this.$message.error('upload failed.')
       })
+      // Ajax.request({
+      //   url: this.uploadAction,
+      //   method: 'post',
+      //   headers: { 'Content-Type': 'multipart/form-data' },
+      //   data: formData,
+      // }).then(({ data }) => {
+      //   this.fileList = this.fileList.map((item) => {
+      //     if (item.uid === uid) {
+      //       item = {
+      //         ...item,
+      //         ...data,
+      //         url: `/api/sysmgr-web/file/file-scan?downloadCode=${data.downloadCode}`,
+      //         status: 'done',
+      //       }
+      //     }
+      //     return item
+      //   })
+      //   this.$emit('change', this.fileList)
+      // }, () => {
+      //   this.$message.error('upload failed.')
+      // })
+    },
+    handleProgress({ event, file }) {
+      console.log(event, file)
+      const vfile = this.vfileList.find(item => item.uid === file.uid)
+      vfile.status = 'uploading'
+      vfile.percent = Math.floor(event.loaded / event.total * 100)
     },
     filterList(list) {
       return list.map((item, index) => {

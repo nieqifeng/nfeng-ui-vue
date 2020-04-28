@@ -1,6 +1,6 @@
 {
   "name": "nfeng-ui-vue",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "dist/nfeng-ui-vue.common.js",
   "scripts": {
     "serve": "vue-cli-service serve",

@@ -1,5 +1,6 @@
 import url from './url'
 import pattern from './pattern'
+import service from './request'
 
 /**
  * 返回一个lower - upper之间的随机数
@@ -36,4 +37,5 @@ export default {
   random,
   trim,
   download,
+  service
 }
