@@ -2,9 +2,9 @@ import Title from './title'
 import Vmodal from './vmodal'
 import Upload from './upload'
 import Download from './download'
-import FormSearch from './formSearch'
+import searchForm from './searchForm'
 import FormCreate from './formCreate'
-import FormList from "./formList";
+import DynamicTable from "./dynamicTable";
 import FormDynaMic from './formDynamic'
 import FormTable from "./formTable";
 
@@ -13,9 +13,9 @@ const components = {
   'nf-modal': Vmodal,
   'nf-upload': Upload,
   'nf-download': Download,
-  'nf-form-search': FormSearch,
+  'nf-search-form': searchForm,
   'nf-form-create': FormCreate,
-  'nf-form-list': FormList,
+  'nf-dynamic-table': DynamicTable,
   'nf-form-dynamic': FormDynaMic,
   'nf-form-table': FormTable,
 }

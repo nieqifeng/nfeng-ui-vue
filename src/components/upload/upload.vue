@@ -39,7 +39,7 @@
 <script>
 // import Ajax from '../../utils/request'
 import NfModal from '../vmodal/vmodal.vue'
-import defaultThumbUrl from '../../assets/pdf2.png'
+import defaultThumbUrl from '../../../public/pdf2.png'
 
 // let intervalPercent = null // 上传进度
 const notImgFile = /[^"]*(\.pdf)/

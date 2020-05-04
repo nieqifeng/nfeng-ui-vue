@@ -1,0 +1,10 @@
+.#{$prefix}dynamic-table {
+  background-color: white;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+
+  .ant-tabs-bar {
+    height: 44px;
+  }
+}

@@ -45,6 +45,7 @@ service.interceptors.response.use(
         // window.location.reload()// 为了重新实例化vue-router对象 避免bug
         // })
       }
+      console.log(response)
       return Promise.reject('error')
     }
     return res

@@ -1,15 +1,16 @@
 <template>
   <div>
-    <nf-form-search
+    <nf-search-form
+      v-if="showFormSearch"
       :fieldOptions="fieldOptions"
       :exportBtn="exportBtn"
       :disabled="tableList.length === 0"
       @submit="(values) => { $emit('searchSubmit', values), getList() }"
       @export="$emit('export')"
-    ></nf-form-search>
+    ></nf-search-form>
     <div class="nf-list">
       <a-tabs
-        class="tabs-noborder"
+        class="tabs-noborder clearfix"
         :defaultActiveKey="tabPanes.legnth ? tabPanes[0].key : ''"
         @change="(key) => { $emit('tabChange', key), getList() }"
       >
@@ -36,10 +37,10 @@
 </template>
 
 <script>
-import NfFormSearch from '../formSearch'
+import NfSearchForm from '../searchForm'
 
 export default {
-  components: { NfFormSearch },
+  components: { NfSearchForm },
   props: {
     fieldOptions: {
       type: Array,
