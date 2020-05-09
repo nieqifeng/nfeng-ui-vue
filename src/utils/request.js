@@ -9,7 +9,7 @@ function showError(msg) {
 
 // 统一对返回结果做处理
 const checkCode = (data) => {
-  // console.log(data)
+  console.log(data)
   if (data.code === 401) {
     // 401屏蔽错误提示
     // if (data.message || data.msg) {
@@ -18,7 +18,7 @@ const checkCode = (data) => {
     // }
     return window.myBus.emit('login')
   }
-  if (data.code === 200 && data.code === 201) {
+  if (data.code >= 200 && data.code < 300) {
     return data
   }
   if (data.message || data.msg) {
