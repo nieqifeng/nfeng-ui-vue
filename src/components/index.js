@@ -11,6 +11,7 @@ import FormTable from './formTable'
 import Input from './control-comps/input.vue'
 import Select from './control-comps/select.vue'
 import Textarea from './control-comps/textarea.vue'
+import Table from './table.vue'
 
 const components = {
   'nf-title': Title,
@@ -22,9 +23,11 @@ const components = {
   'nf-dynamic-tableaa': DynamicTable,
   'nf-form-dynamic': FormDynaMic,
   'nf-form-table': FormTable,
+
   'nf-input': Input,
   'nf-select': Select,
   'nf-textarea': Textarea,
+  'nf-table': Table
 }
 
 export default components

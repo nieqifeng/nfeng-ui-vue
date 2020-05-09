@@ -1,11 +1,11 @@
 <template>
   <a-col>
     <a-select
+      v-model="modelVal"
       class="nf-form-input"
       showSearch
       :placeholder="placeholder"
       optionFilterProp="children"
-      @change="handleChange"
       :filterOption="false"
     >
       <a-select-option
@@ -20,8 +20,10 @@
 
 <script>
 import ncformCommon from '@ncform/ncform-common'
+import _get from 'lodash-es/get'
 
 const controlMixin = ncformCommon.mixins.vue.controlMixin
+const ncformUtils = ncformCommon.ncformUtils
 
 export default {
   mixins: [controlMixin],
@@ -53,6 +55,11 @@ export default {
       },
 
       isLocalSource: true,
+      options: [],
+      itemTemplate: {
+        template: '',
+        props: ['item']
+      },
     }
   },
 
@@ -68,21 +75,46 @@ export default {
       this._keepSelectedItem()
     },
 
+
     _keepSelectedItem() {
+      console.log(this.mergeConfig.itemDataKey)
       if (this.mergeConfig.itemDataKey) {
         let selectedModelVal = Array.isArray(this.$data.modelVal) ? this.optionsData.filter(item => this.$data.modelVal.indexOf(item[this.mergeConfig.itemValueField]) >= 0) : this.optionsData.find(item => item[this.mergeConfig.itemValueField] === this.$data.modelVal)
         this._setTempData(this.mergeConfig.itemDataKey, selectedModelVal)
       }
     },
+
+    _getDataSource() {
+      if (_get(this.mergeConfig, 'enumSourceRemote.remoteUrl')) {
+        this.$data.isLocalSource = false
+        this.remoteMethod()
+        return
+      }
+      if (this.mergeConfig.enumSource.length == 0) {
+        if (ncformUtils.getValType(this.value) == 'boolean') {
+          this.$data.options = [
+            {
+              value: 1,
+              label: 'true'
+            },
+            {
+              value: 0,
+              label: 'false'
+            }
+          ]
+          this._keepSelectedItem()
+        }
+      } else {
+        this.$data.options = this.mergeConfig.enumSource
+        this._keepSelectedItem()
+      }
+    },
   },
 
   created() {
-    if (this.$data.modelVal !== undefined) {
-      this.$data.inputVal =
-        ['string', 'number'].indexOf(typeof this.$data.modelVal) >= 0
-          ? this.$data.modelVal
-          : this.$data.modelVal[this.mergeConfig.modelField]
-    }
+    
+    this.$data.itemTemplate.template = this.mergeConfig.itemTemplate
+    this._getDataSource()
   }
 }
 </script>
