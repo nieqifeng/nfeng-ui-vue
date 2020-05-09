@@ -1,61 +1,107 @@
-import axios from 'axios'
-import { message } from 'ant-design-vue'
-// import store from '@/store'
-// import { getToken } from '@/utils/auth'
+import Axios from 'axios'
+import {
+  message,
+} from 'ant-design-vue'
 
-// 创建axios实例
-const service = axios.create({
-  // baseURL: '/api', // api的base_url
-  timeout: 20000, // 请求超时时间
+function showError(msg) {
+  message.error(msg)
+}
+
+// 统一对返回结果做处理
+const checkCode = (data) => {
+  // console.log(data)
+  if (data.code === 401) {
+    // 401屏蔽错误提示
+    // if (data.message || data.msg) {
+    //   const msg = data.message || data.msg
+    //   showError(msg)
+    // }
+    return window.myBus.emit('login')
+  }
+  if (data.code === 200 && data.code === 201) {
+    return data
+  }
+  if (data.message || data.msg) {
+    const msg = data.message || data.msg
+    if (data.code !== 498) {
+      showError(msg)
+    }
+  }
+  return Promise.reject(data)
+}
+
+Axios.interceptors.response.use((res) => checkCode(res.data), (err) => checkCode(err.response.data))
+
+function getHeaders() {
+  const headers = {
+    // 'If-Modified-Since': '0',
+    // 'x-sec-profile': window.localStorage.getItem('selectedChannel') || ''
+  }
+  if (window.localStorage.getItem('userContext')) {
+    const userContext = JSON.parse(window.localStorage.getItem('userContext'))
+    if (userContext.lvl1SubjectId) {
+      return {
+        ...headers,
+        'x-sec-subject-app-id': userContext.subjectId,
+        'x-sec-subject-app-name': encodeURI(userContext.subjectName),
+        'x-sec-lvl1subject-app-id': userContext.lvl1SubjectId,
+        'x-sec-vlv1subject-app-name': encodeURI(userContext.lvl1SubjectName),
+      }
+    }
+    return {
+      ...headers,
+      'x-sec-subject-company-id': userContext.subjectId,
+      'x-sec-subject-company-name': encodeURI(userContext.subjectName),
+    }
+  }
+  return headers
+}
+
+// if (userContext) {
+//   userContext = JSON.parse(userContext)
+//   if (userContext.lvl1SubjectId) {
+//     Object.assign(headers, {
+//       'x-sec-subject-app-id': userContext.subjectId,
+//       'x-sec-subject-app-name': encodeURI(userContext.subjectName),
+//       'x-sec-lvl1subject-app-id': userContext.lvl1SubjectId,
+//       'x-sec-vlv1subject-app-name': encodeURI(userContext.lvl1SubjectName),
+//     })
+//   } else {
+//     Object.assign(headers, {
+//       'x-sec-subject-company-id': userContext.subjectId,
+//       'x-sec-subject-company-name': encodeURI(userContext.subjectName),
+//     })
+//   }
+// }
+
+const get = (url, params) => Axios({
+  url,
+  method: 'get',
+  params: {
+    ...params,
+    t: parseInt(Math.random() * 100000, 10),
+  },
+  headers: getHeaders(),
 })
 
-// 为Promise添加一些方法
-Promise.prototype.finally = function finallyFn(callback) {
-  const P = this.constructor
-  return this.then(
-    value => P.resolve(callback()).then(() => value),
-    reason => P.resolve(callback()).then(() => { throw reason }),
-  )
-}
-Promise.prototype.h_then = function then(success = () => { }, error = () => { }) {
-  return this.then(data => success(data)).catch((err) => {
-    console.log('err = ', err)
-    return error(err)
-  })
-}
-
-// request拦截器
-// service.interceptors.request.use((config) => {
-//   if (store.getters.token) {
-//     config.headers.token = getToken()
-//   }
-//   return config
-// })
-
-// respone拦截器
-service.interceptors.response.use(
-  (response) => {
-    const res = response.data
-    if (res.code !== 200) {
-      // 401:Token过期，失效等等;
-      if (res.code === 401) {
-        message.error('登录超时,请重新登录')
-        // 清除token，刷新页面
-        // store.dispatch('FedLogOut').then(() => {
-        // window.location.reload()// 为了重新实例化vue-router对象 避免bug
-        // })
-      }
-      console.log(response)
-      return Promise.reject('error')
-    }
-    return res
+const post = (url, data) => Axios({
+  url,
+  method: 'post',
+  params: {
+    // t: parseInt(Math.random() * 100000, 10),
   },
-  (error) => {
-    console.log(`err${error}`)// for debug
-    message.error(error.message)
-    return Promise.reject(error)
-  },
-)
+  data,
+  headers: getHeaders(),
+})
 
-export default service
-// export const { get, post } = service
+export default {
+  install(Vue) {
+    Vue.prototype.$get = get
+    Vue.prototype.$post = post
+  },
+}
+
+export {
+  get,
+  post,
+}

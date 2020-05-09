@@ -100,7 +100,7 @@ export default {
   text-align: center;
   margin-top: 20px;
 }
-.nf-form-input {
-  width: 360px !important;
-}
+// .nf-form-input {
+//   width: 360px !important;
+// }
 </style>
