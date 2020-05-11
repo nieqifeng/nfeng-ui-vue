@@ -1,12 +1,26 @@
 <template>
   <a-table
+    v-if="dataSource.length"
     :columns="tableColumns"
-    :dataSource="tableList"
+    :dataSource="dataSource"
     :loading="loading"
     :pagination="pagination"
-    :rowKey="record => record.rowKey"
+    :rowKey="record => record._id"
+    :defaultExpandAllRows="true"
     @change="tableChange"
-  ></a-table>
+  >
+    <span slot="action" slot-scope="text, record">
+      <a href="javascript:;" @click="$emit('row-update', record)">编辑</a>
+      <a-divider type="vertical"/>
+      <a-popconfirm
+        v-if="dataSource.length"
+        title="确定删除?"
+        @confirm="() => $emit('row-del', record)"
+      >
+        <a href="javascript:;">删除</a>
+      </a-popconfirm>
+    </span>
+  </a-table>
 </template>
 
 <script>
@@ -14,12 +28,6 @@ import { get } from '../utils/request'
 
 export default {
   props: {
-    fieldOptions: {
-      type: Array,
-      default() {
-        return []
-      }
-    },
     queryUrl: {
       type: String
     },
@@ -42,7 +50,8 @@ export default {
         showTotal: total => `共 ${total} 条`
       },
       // 表格数据
-      tableList: [],
+      dataSource: [],
+      // 表格配置
       loading: true
     }
   },
@@ -50,12 +59,8 @@ export default {
     // 查询
     getList() {
       this.loading = true
-      console.log(get)
       get(this.queryUrl, this.queryFields).then(({ list, total }) => {
-        this.tableList = list.map((item, key) => {
-          item.rowKey = key
-          return item
-        })
+        this.dataSource = list
         this.pagination.total = total ? total : list.length
         this.loading = false
       })
@@ -67,7 +72,15 @@ export default {
       this.getList()
     },
   },
-  mounted() {
+  created() {
+    if (!this.tableColumns.some(item => item.key == 'action' || item.dataIndex == 'action')) {
+      this.tableColumns.push({
+        title: '操作',
+        key: 'action',
+        scopedSlots: { customRender: 'action' },
+      })
+    }
+
     this.getList()
   }
 }
