@@ -29,6 +29,13 @@ export default {
     }
   },
 
+  watch: {
+    inputVal(newVal, oldVal) {
+      if ((!newVal && !oldVal) || this.mergeConfig.updateOn === 'blur') return
+      this.$data.modelVal = newVal
+    }
+  },
+
   methods: {
     onBlur() {
       if (this.mergeConfig.updateOn === 'blur') {

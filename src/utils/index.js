@@ -19,13 +19,13 @@ function trim(str) {
 }
 
 function download(link) {
-  let aLink = document.createElement('a');
+  let aLink = document.createElement('a')
   aLink.href = link
-  let event;
+  let event
   if(window.MouseEvent){
     event = new MouseEvent('click')
   }else{
-    event = document.createEvent('MouseEvents');
+    event = document.createEvent('MouseEvents')
     event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
   }
   aLink.dispatchEvent(event)

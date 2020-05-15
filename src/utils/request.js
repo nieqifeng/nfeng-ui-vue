@@ -9,7 +9,7 @@ function showError(msg) {
 
 // 统一对返回结果做处理
 const checkCode = (data) => {
-  console.log(data)
+  // console.log(data)
   if (data.code === 401) {
     // 401屏蔽错误提示
     // if (data.message || data.msg) {
@@ -79,7 +79,7 @@ const get = (url, params) => Axios({
   method: 'get',
   params: {
     ...params,
-    t: parseInt(Math.random() * 100000, 10),
+    // t: parseInt(Math.random() * 100000, 10),
   },
   headers: getHeaders(),
 })

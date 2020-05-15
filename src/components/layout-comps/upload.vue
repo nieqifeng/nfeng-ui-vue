@@ -38,7 +38,7 @@
 
 <script>
 // import Ajax from '../../utils/request'
-import NfModal from '../vmodal/vmodal.vue'
+import NfModal from './vmodal.vue'
 import defaultThumbUrl from '../../../public/pdf2.png'
 
 // let intervalPercent = null // 上传进度
@@ -145,7 +145,7 @@ export default {
       // }, 50)
 
       this.uploadFunction(file, this.handleProgress).then((data) => {
-        console.log(data)
+        // console.log(data)
         const downloadCode = data && data.downloadCode
         // const url = `/api/sysmgr-web/file/file-scan?downloadCode=${downloadCode}`
         const url = `/api/sysmgr-web/file/download?downloadCode=${downloadCode}`
@@ -161,8 +161,8 @@ export default {
           return item
         })
         this.$emit('change', this.fileList)
-      }, (err) => {
-        console.log(err)
+      }, () => {
+        // console.log(err)
         newFile.status = 'error'
         this.$message.error('upload failed.')
       })

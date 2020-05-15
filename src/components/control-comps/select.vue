@@ -19,11 +19,14 @@
 
 
 <script>
-import ncformCommon from '@ncform/ncform-common'
 import _get from 'lodash-es/get'
+import _cloneDeep from 'lodash-es/cloneDeep'
+import ncformCommon from '@ncform/ncform-common'
 
 const controlMixin = ncformCommon.mixins.vue.controlMixin
 const ncformUtils = ncformCommon.ncformUtils
+
+import { post } from '../../utils/request.js'
 
 export default {
   mixins: [controlMixin],
@@ -63,6 +66,13 @@ export default {
     }
   },
 
+  props: {
+    value: {
+      type: [String, Number, Boolean, Object, Array],
+      default: ''
+    }
+  },
+
   computed: {
     // disabled / readonly / hidden / placeholder 你可以直接使用这些变量来控制组件的行为
     optionsData() {
@@ -71,13 +81,40 @@ export default {
   },
 
   methods: {
+    remoteMethod(query) {
+      if (!_get(this.mergeConfig, 'enumSourceRemote.remoteUrl')) {
+        return
+      }
+
+      const options = {
+        url: this.mergeConfig.enumSourceRemote.remoteUrl,
+        params: _cloneDeep(_get(this.mergeConfig, 'enumSourceRemote.otherParams', {}))
+      }
+      if (this.mergeConfig.enumSourceRemote.paramName)
+        options.params[this.mergeConfig.enumSourceRemote.paramName] = query
+      post(options.url, options.params).then(res => {
+        this.$data.options = this.mergeConfig.enumSourceRemote.resField
+          ? _get(res.data, this.mergeConfig.enumSourceRemote.resField)
+          : res.data
+        if (
+          this.mergeConfig.enumSourceRemote.selectFirstItem &&
+          this.$data.options.length > 0
+        ) {
+          this.$data.modelVal =
+            this.$data.modelVal ||
+            this.$data.options[0][this.mergeConfig.itemValueField]
+        }
+
+        this._keepSelectedItem()
+      })
+    },
+
     handleChange() {
       this._keepSelectedItem()
     },
 
 
     _keepSelectedItem() {
-      console.log(this.mergeConfig.itemDataKey)
       if (this.mergeConfig.itemDataKey) {
         let selectedModelVal = Array.isArray(this.$data.modelVal) ? this.optionsData.filter(item => this.$data.modelVal.indexOf(item[this.mergeConfig.itemValueField]) >= 0) : this.optionsData.find(item => item[this.mergeConfig.itemValueField] === this.$data.modelVal)
         this._setTempData(this.mergeConfig.itemDataKey, selectedModelVal)
@@ -112,7 +149,10 @@ export default {
   },
 
   created() {
-    
+    if (typeof this.value === 'boolean') {
+      this.$data.valueType = 'boolean'
+      this.$data.modelVal = this.$data.modelVal ? 1 : 0
+    }
     this.$data.itemTemplate.template = this.mergeConfig.itemTemplate
     this._getDataSource()
   }

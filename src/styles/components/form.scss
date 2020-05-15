@@ -1,4 +1,23 @@
 .#{$prefix}form {
   width: 600px;
   margin: 0 auto;
+  display: block;
+}
+
+.#{$prefix}search-form {
+  .el-row {
+    padding: 0;
+  }
+  .el-col {
+    padding-left: 0!important;
+    padding-right: 0!important;
+  }
+  .el-form-item {
+    width: auto;
+    margin-right: 20px;
+    margin-bottom: 24px;
+  }
+  .el-form-item__label {
+    font-weight: normal!important;
+  }
 }
