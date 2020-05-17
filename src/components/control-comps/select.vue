@@ -93,6 +93,9 @@ export default {
       if (this.mergeConfig.enumSourceRemote.paramName)
         options.params[this.mergeConfig.enumSourceRemote.paramName] = query
       post(options.url, options.params).then(res => {
+        if (!res) {
+          return
+        }
         this.$data.options = this.mergeConfig.enumSourceRemote.resField
           ? _get(res.data, this.mergeConfig.enumSourceRemote.resField)
           : res.data

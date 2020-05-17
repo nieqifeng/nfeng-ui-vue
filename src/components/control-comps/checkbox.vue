@@ -44,7 +44,6 @@ export default {
     },
     'mergeConfig.enumSource': {
       handler() {
-        console.log('component watch')
         this._getDataSource()
       },
       deep: true
