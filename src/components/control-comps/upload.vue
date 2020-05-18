@@ -11,7 +11,7 @@
       :customRequest="handleUpload"
       @change="handleUploadChange"
       @preview="handlePreview"
-      :fileList="fileList"
+      :file-list="fileList"
     >
       <template v-if="Array.isArray(buttonText)">
         <template v-for="key in mergeConfig.limit">
@@ -60,6 +60,30 @@ import { message } from 'ant-design-vue'
 
 export default {
   mixins: [controlMixin],
+  i18nData: {
+    en: {
+      uploadTips: 'Drag file here, or <em>click to upload</em>',
+      uploadServer: 'Upload to server',
+      upload: 'Upload',
+      chFile: 'Select file',
+      successChTips: '<%= fileCount %> files selected',
+      uploadSuccess: 'Uploaded successfully!',
+      uploadFail: 'Uploading files all failed!',
+      uploadSomeFail: 'Some files failed to upload!',
+      limitTips: 'No more than <%= limit %> files can be selected, please re-select'
+    },
+    zh_cn: {
+      uploadTips: '将文件拖到此处，或<em>点击上传</em>',
+      uploadServer: '上传到服务器',
+      upload: '点击上传',
+      chFile: '选取文件',
+      successChTips: '共选中文件 <%= fileCount %> 个',
+      uploadSuccess: '上传成功！',
+      uploadFail: '上传文件全部失败！',
+      uploadSomeFail: '部分文件上传失败！',
+      limitTips: '选中文件不能多于<%= limit %>个，请重新选择'
+    }
+  },
   components: { NfModal },
   props: {
     // 按钮文案
@@ -129,6 +153,7 @@ export default {
         }
       }
       vm.uploadInfo.numUploaded = numUploaded
+      console.log(modelVal)
       return modelVal
     },
 
@@ -210,9 +235,7 @@ export default {
       vm.uploadInfo.num[state]++
       if ( vm.uploadInfo.count === total) { // 完成上传
         if (total === vm.uploadInfo.num[state]) {
-          // console.log(state === 'success' ? vm.$nclang('uploadSuccess') : vm.$nclang('uploadFail'))
-          // message[state](state === 'success' ? vm.$nclang('uploadSuccess') : vm.$nclang('uploadFail'))
-          message[state](state === 'success' ? '上传成功~' : '上传失败~')
+          message[state](state === 'success' ? vm.$nclang('uploadSuccess') : vm.$nclang('uploadFail'))
         } else {
           message.error(vm.$nclang('uploadSomeFail'))
         }

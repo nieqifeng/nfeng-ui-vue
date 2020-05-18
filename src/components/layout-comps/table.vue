@@ -1,11 +1,7 @@
 <template>
   <div>
     <div v-if="formSchema">
-      <ncform
-        :form-schema="formSchema"
-        form-name="searchForm"
-        v-model="formSchema.value"
-      ></ncform>
+      <ncform :form-schema="formSchema" form-name="searchForm" v-model="formSchema.value"></ncform>
       <a-form-item>
         <a-button type="primary" @click="remoteMethod()">查询</a-button>
         <a-button style="margin-left: 20px;" @click="$ncformReset('searchForm')">清空</a-button>
@@ -19,7 +15,6 @@
       :loading="loading"
       :pagination="pagination"
       :rowKey="record => record._id"
-      :defaultExpandAllRows="true"
       @change="tableChange"
     >
       <span slot="action" slot-scope="text, record">
@@ -35,6 +30,9 @@
             <a href="javascript:;">删除</a>
           </a-popconfirm>
         </template>
+      </span>
+      <span slot="img" slot-scope="text">
+        <img :src="text" width="80" />
       </span>
     </a-table>
   </div>

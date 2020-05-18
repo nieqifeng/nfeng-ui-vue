@@ -6,6 +6,7 @@ import Input from './control-comps/input.vue'
 import Select from './control-comps/select.vue'
 import Textarea from './control-comps/textarea.vue'
 import CheckBox from './control-comps/checkbox.vue'
+import Radio from './control-comps/radio.vue'
 import Upload from './control-comps/upload.vue'
 
 const components = {
@@ -18,6 +19,7 @@ const components = {
   'nf-select': Select,
   'nf-textarea': Textarea,
   'nf-checkbox': CheckBox,
+  'nf-radio': Radio,
 }
 
 export default components
