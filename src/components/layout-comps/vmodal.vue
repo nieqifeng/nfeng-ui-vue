@@ -2,11 +2,11 @@
   <div class="nf-modal-mask" v-if="visible">
     <div class="nf-modal">
       <div class="nf-modal-body">
-        <button class="ant-modal-close" @click="visible = false">
+        <a href="javascript:;" class="ant-modal-close" @click="visible = false">
           <span class="ant-modal-close-x">
             <a-icon type="close" />
           </span>
-        </button>
+        </a>
         <img :src="imageList.length ? imageList[current] : ''" style="width: 100%;" />
       </div>
     </div>

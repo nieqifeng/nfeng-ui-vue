@@ -2,6 +2,12 @@
   width: 600px;
   margin: 0 auto;
   display: block;
+  .el-form-item__label {
+    width: 120px!important;
+  }
+  .el-form-item__content {
+    margin-left: 120px!important;
+  }
 }
 
 .#{$prefix}search-form {

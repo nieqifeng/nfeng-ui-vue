@@ -20,7 +20,7 @@
       <span slot="action" slot-scope="text, record">
         <slot name="tableAction" v-bind="record"/>
         <a href="javascript:;" @click="$emit('row-update', record, remoteMethod)">编辑</a>
-        <template v-if="!record.children">
+        <template v-if="!record.children || !record.children.length">
           <a-divider type="vertical"/>
           <a-popconfirm
             v-if="dataSource.length"
@@ -32,7 +32,7 @@
         </template>
       </span>
       <span slot="img" slot-scope="text">
-        <img :src="text" width="80" />
+        <img :src="text" width="80">
       </span>
     </a-table>
   </div>
