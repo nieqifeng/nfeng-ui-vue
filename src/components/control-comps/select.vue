@@ -7,6 +7,7 @@
       :placeholder="placeholder"
       optionFilterProp="children"
       :filterOption="false"
+      @change="handleChange"
     >
       <a-select-option
         v-for="item in optionsData"
@@ -26,7 +27,7 @@ import ncformCommon from '@ncform/ncform-common'
 const controlMixin = ncformCommon.mixins.vue.controlMixin
 const ncformUtils = ncformCommon.ncformUtils
 
-import { post } from '../../utils/request.js'
+import { get } from '../../utils/request.js'
 
 export default {
   mixins: [controlMixin],
@@ -70,7 +71,7 @@ export default {
     value: {
       type: [String, Number, Boolean, Object, Array],
       default: ''
-    }
+    },
   },
 
   computed: {
@@ -92,7 +93,7 @@ export default {
       }
       if (this.mergeConfig.enumSourceRemote.paramName)
         options.params[this.mergeConfig.enumSourceRemote.paramName] = query
-      post(options.url, options.params).then(res => {
+      get(options.url, options.params).then(res => {
         if (!res) {
           return
         }

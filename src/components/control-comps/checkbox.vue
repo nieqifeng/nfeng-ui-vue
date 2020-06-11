@@ -1,5 +1,21 @@
 <template>
-  <div>{{dataSource}}{{mergeConfig}}</div>
+  <a-col>
+    <a-checkbox-group
+      v-if="!readonly"
+      size="mini"
+      :disabled="disabled"
+      v-model="modelVal"
+      @change="handleCheckedOptChange"
+    >
+      <component :is="'a-checkbox' + (mergeConfig.type === 'button' ? '-button' : '')"
+        v-for="opt in dataSource"
+        :key="opt[mergeConfig.itemValueField]"
+        :value="opt[mergeConfig.itemValueField]"
+        :class="mergeConfig.type === 'checkbox' && mergeConfig.arrangement === 'v' ? 'is-vertical' : ''"
+        :style="{margin: '0 16px 16px 0'}"
+      >{{opt[mergeConfig.itemLabelField]}}</component>
+    </a-checkbox-group>
+  </a-col>
 </template>
 
 <script>
@@ -8,8 +24,33 @@ import _get from 'lodash-es/get'
 
 const controlMixin = ncformCommon.mixins.vue.controlMixin
 
+import { get } from '../../utils/request.js'
+
 export default {
   mixins: [controlMixin],
+
+  i18nData: {
+    en: {
+      yes: 'Yes',
+      no: 'No',
+      all: 'All'
+    },
+    zh_cn: {
+      yes: '是',
+      no: '否',
+      all: '全选'
+    }
+  },
+
+  props: {
+    value: {
+      // type: [String, Number, Boolean, Array],
+      type: [Boolean, Array],
+      default() {
+        return []
+      }
+    }
+  },
 
   data() {
     return {
@@ -36,41 +77,37 @@ export default {
   },
 
   watch: {
-    'mergeConfig.enumSourceRemote': {
-      handler() {
-        this._getDataSource()
-      },
-      deep: true
-    },
-    'mergeConfig.enumSource': {
-      handler() {
-        this._getDataSource()
-      },
-      deep: true
-    }
+    // 'mergeConfig.enumSourceRemote': {
+    //   handler() {
+    //     this._getDataSource()
+    //   },
+    //   deep: true
+    // },
+    // 'mergeConfig.enumSource': {
+    //   handler() {
+    //     this._getDataSource()
+    //   },
+    //   deep: true
+    // }
   },
 
   methods: {
+    handleCheckedOptChange(value) {
+      const vm = this
+      let checkedCount = value.length
+      vm.$data.isCheckAll = checkedCount === vm.$data.dataSource.length
+      vm.isIndeterminate = checkedCount > 0 && checkedCount < vm.$data.dataSource.length
+
+      vm._keepSelectedItem()
+    },
     getRemoteSource() {
       try {
         const vm = this
         const enumSourceRemote = vm.mergeConfig.enumSourceRemote
 
-        this.$http({
-          method: 'GET',
-          url: enumSourceRemote.remoteUrl,
-          // data: {},
-          // headers: {
-          //   'X-Requested-With':'XMLHttpRequest'
-          // },
-        }).then(res => {
-          console.log(res)
-          // console.log(enumSourceRemote.resField)
-          // console.log(_get(data, enumSourceRemote.resField || '', []))
-          if (res.code === 200 ) {
-            // let data = res.data
-            console.log(_get(res, enumSourceRemote.resField || '', []))
-            vm.$data.dataSource = _get(res, enumSourceRemote.resField || '', [])
+        get(enumSourceRemote.remoteUrl).then(res => {
+          if (res.status === 200 ) {
+            vm.$data.dataSource = _get(res.data, enumSourceRemote.resField || '', [])
             vm._keepSelectedItem()
           }
         }).catch(() => {
@@ -96,12 +133,15 @@ export default {
         vm.$data.dataSource = [ {label: this.$nclang('yes'), value: true}]
         vm._keepSelectedItem()
       } else {
-        console.log(vm.mergeConfig)
         vm.$data.dataSource = vm.mergeConfig.enumSource
         vm._keepSelectedItem()
       }
     }
-  }
+  },
+
+  created() {
+    this._getDataSource()
+  },
 }
 </script>
 

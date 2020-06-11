@@ -18,7 +18,7 @@ const checkCode = (data) => {
     // }
     return window.myBus.emit('login')
   }
-  if (data.code >= 200 && data.code < 300) {
+  if (data.status >= 200 && data.status < 300) {
     return data
   }
   if (data.message || data.msg) {

@@ -153,7 +153,6 @@ export default {
         }
       }
       vm.uploadInfo.numUploaded = numUploaded
-      console.log(modelVal)
       return modelVal
     },
 
