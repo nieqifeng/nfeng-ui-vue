@@ -1,0 +1,34 @@
+.#{$mPrefix}form {
+  padding: 0 16px;
+  .form-group {
+    display: flex;
+    border-bottom: 1px solid #EEEEEE;
+    .text-danger {
+      display: none;
+    }
+    .col-form-label {
+      width: auto!important;
+      white-space: nowrap;
+      padding: 10px 0;
+      font-size: 14px;
+      line-height: 24px;
+    }
+    .col-md-9 {
+      width: 100%;
+    }
+    .nf-mform-item__error {
+      font-size: 14px;
+      text-align: right;
+      padding: 0 16px 10px;
+    }
+  }
+}
+
+.#{$mPrefix}form-showLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+  display: block;
+  float: right;
+}

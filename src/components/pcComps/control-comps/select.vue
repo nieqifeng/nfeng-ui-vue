@@ -27,7 +27,7 @@ import ncformCommon from '@ncform/ncform-common'
 const controlMixin = ncformCommon.mixins.vue.controlMixin
 const ncformUtils = ncformCommon.ncformUtils
 
-import { get } from '../../utils/request.js'
+import { get } from '../../../utils/request.js'
 
 export default {
   mixins: [controlMixin],
@@ -93,6 +93,7 @@ export default {
       }
       if (this.mergeConfig.enumSourceRemote.paramName)
         options.params[this.mergeConfig.enumSourceRemote.paramName] = query
+
       get(options.url, options.params).then(res => {
         if (!res) {
           return

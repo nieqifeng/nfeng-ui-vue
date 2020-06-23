@@ -48,15 +48,15 @@ import _get from 'lodash-es/get'
 
 const controlMixin = ncformCommon.mixins.vue.controlMixin
 
-import { post } from '../../utils/request.js'
+import { post } from '../../../utils/request.js'
 import NfModal from '../layout-comps/vmodal.vue'
-import defaultThumbUrl from '../../assets/pdf2.png'
+import defaultThumbUrl from '../../../assets/images/pdf2.png'
 
 let intervalPercent = null // 上传进度
 const notImgFile = /[^"]*(\.pdf)/
 
 import { v4 as uuidv4 } from 'uuid'
-import { message } from 'ant-design-vue'
+// import { message } from 'ant-design-vue'
 
 export default {
   mixins: [controlMixin],
@@ -201,7 +201,7 @@ export default {
       if (!vm.mergeConfig.autoUpload
         && !vm.mergeConfig.showFileList
         && fileList.length) {
-        message({
+        this.$message({
           message: this.$nclang('successChTips', {fileCount: fileList.length}),
           type: 'success'
         })
@@ -234,9 +234,9 @@ export default {
       vm.uploadInfo.num[state]++
       if ( vm.uploadInfo.count === total) { // 完成上传
         if (total === vm.uploadInfo.num[state]) {
-          message[state](state === 'success' ? vm.$nclang('uploadSuccess') : vm.$nclang('uploadFail'))
+          this.$message[state](state === 'success' ? vm.$nclang('uploadSuccess') : vm.$nclang('uploadFail'))
         } else {
-          message.error(vm.$nclang('uploadSomeFail'))
+          this.$message.error(vm.$nclang('uploadSomeFail'))
         }
 
         vm.modelVal = fileList

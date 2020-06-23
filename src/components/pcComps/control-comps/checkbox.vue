@@ -24,7 +24,7 @@ import _get from 'lodash-es/get'
 
 const controlMixin = ncformCommon.mixins.vue.controlMixin
 
-import { get } from '../../utils/request.js'
+import { get } from '../../../utils/request.js'
 
 export default {
   mixins: [controlMixin],

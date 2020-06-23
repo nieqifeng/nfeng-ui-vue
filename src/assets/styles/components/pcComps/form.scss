@@ -2,12 +2,12 @@
   max-width: 600px;
   margin: 0 auto;
   display: block;
-  .el-form-item__label {
-    width: 120px!important;
-  }
-  .el-form-item__content {
-    margin-left: 120px!important;
-  }
+  // .el-form-item__label {
+  //   width: 120px!important;
+  // }
+  // .el-form-item__content {
+  //   margin-left: 120px!important;
+  // }
 }
 
 .#{$prefix}search-form {
@@ -22,8 +22,17 @@
     width: auto;
     margin-right: 20px;
     margin-bottom: 24px;
+    display: flex;
   }
   .el-form-item__label {
     font-weight: normal!important;
+    width: auto!important;
   }
+  .el-form-item__content {
+    margin-left: 0!important;
+  }
+}
+
+.#{$prefix}form-input {
+  width: auto!important;
 }

@@ -1,11 +1,11 @@
 import Axios from 'axios'
-import {
-  message,
-} from 'ant-design-vue'
+// import {
+//   message,
+// } from 'ant-design-vue'
 
-function showError(msg) {
-  message.error(msg)
-}
+// function showError(msg) {
+//   message.error(msg)
+// }
 
 // 统一对返回结果做处理
 const checkCode = (data) => {
@@ -18,13 +18,14 @@ const checkCode = (data) => {
     // }
     return window.myBus.emit('login')
   }
-  if (data.status >= 200 && data.status < 300) {
+  if (data.code >= 200 && data.code < 300) {
     return data
   }
   if (data.message || data.msg) {
     const msg = data.message || data.msg
     if (data.code !== 498) {
-      showError(msg)
+      // showError(msg)
+      console.error(msg)
     }
   }
   return Promise.reject(data)

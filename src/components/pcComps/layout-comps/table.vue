@@ -15,6 +15,7 @@
       :loading="loading"
       :pagination="pagination"
       :rowKey="record => record._id"
+      :scroll="scroll"
       @change="tableChange"
     >
       <span slot="action" slot-scope="text, record">
@@ -42,7 +43,7 @@
 import _get from 'lodash-es/get'
 import _cloneDeep from 'lodash-es/cloneDeep'
 
-import { post } from '../../utils/request'
+import { post } from '../../../utils/request'
 
 export default {
   props: {
@@ -58,6 +59,9 @@ export default {
     tableColumns: {
       type: Array
     },
+    scroll: {
+      type: Object
+    }
   },
 
   data() {
@@ -69,6 +73,7 @@ export default {
         size: 'small',
         showQuickJumper: true,
         showSizeChanger: true,
+        current: 1,
         pageSize: 10,
         total: 0,
         showTotal: total => `共 ${total} 条`
