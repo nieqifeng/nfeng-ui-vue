@@ -1,4 +1,4 @@
-# vue-jest
+# nfeng-ui-vue
 
 ## Project setup
 ```
