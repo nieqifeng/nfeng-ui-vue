@@ -1,29 +1,20 @@
 # nfeng-ui-vue
+基于Vue的后台插件，主要做了antd的二次封装，使组件使用更加配置化。
 
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
+## Install
+```shell
+yarn add nfeng-ui-vue
 ```
 
-### Compiles and minifies for production
-```
-yarn build
+## Quick Start
+```javascript
+import NfengUI from 'nfeng-ui-vue'
+
+Vue.use(NfengUI)
 ```
 
-### Run your unit tests
-```
-yarn test:unit
-```
+## Documents
 
-### Lints and fixes files
-```
-yarn lint
-```
+Check out our docs at https://n-feng.github.io/nfeng-ui-vue/.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+11
