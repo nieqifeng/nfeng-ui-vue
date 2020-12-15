@@ -16,8 +16,8 @@ export default {
         changeTitle(title) {
             this.title = title
         },
-        handleSaveJson(val) {
-            console.log(val)
+        handleSaveJson() {
+            // console.log(val)
         }
     }
 }

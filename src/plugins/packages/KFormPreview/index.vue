@@ -35,7 +35,7 @@ export default {
   methods: {
     handleSubmit(p) {
       p.then(res => {
-        console.log(res, "获取数据成功");
+        console.log(res, JSON.string(res), "获取数据成功");
         this.$refs.jsonModel.jsonData = res;
         this.$refs.jsonModel.visible = true;
       }).catch(err => {

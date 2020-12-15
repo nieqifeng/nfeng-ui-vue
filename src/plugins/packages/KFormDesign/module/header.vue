@@ -8,7 +8,7 @@
 <template>
   <header class="header">
     <span v-if="!isEdit">{{title}}</span>
-    <a-input style="width: 200px;" v-else v-model="title" placeholder="请输入标题"></a-input>
+    <a-input style="width: 200px;" v-else :value="title" @change="onChange" placeholder="请输入标题"></a-input>
     <a-button style="color: #fff" type="link" @click="edit">{{ !isEdit ? '修改' : '确认' }}</a-button>
   </header>
 </template>
@@ -28,7 +28,10 @@ export default {
   methods: {
     edit() {
       this.isEdit = !this.isEdit
-    }
+    },
+    onChange(e) {
+      this.$emit('changeTitle', e.target.value)
+    },
   },
   watch: {
     title(val) {

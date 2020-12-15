@@ -367,15 +367,15 @@ export default {
     handleOpenJsonModal() {
       // 打开json预览模态框
       this.$refs.jsonModal.jsonData = this.data;
-      this.$emit('handleSaveJson', this.data)
-      console.log(JSON.stringify(this.data))
-      localStorage.setItem('json', JSON.stringify(this.data))
-      // this.$refs.jsonModal.visible = true;
+      // this.$emit('handleSaveJson', this.data)
+      // console.log(JSON.stringify(this.data))
+      // localStorage.setItem('json', JSON.stringify(this.data))
+      this.$refs.jsonModal.visible = true;
     },
     handleOpenCodeModal() {
       // 打开代码预览模态框
       this.$refs.codeModal.jsonData = this.data;
-      // this.$refs.codeModal.visible = true;
+      this.$refs.codeModal.visible = true;
     },
     handleOpenImportJsonModal() {
       // 打开json预览模态框
