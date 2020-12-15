@@ -85,6 +85,10 @@ const routes: Array<RouteConfig> = [
             import(/* webpackChunkName: "page" */ '../views/PageX.vue')
         }
       ]
+    },
+    {
+      path: '/design',
+      component: () => import('../example/Design/Design.vue')
     }
   ]
 
