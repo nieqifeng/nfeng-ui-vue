@@ -1,121 +1,312 @@
 <template>
-  <a-form-model-item :label="item.label" :prop="item.prop">
-    <a-input
-      v-if="item.type === 'input'"
-      :style="{ width: `${item.width || 200}px` }"
-      :placeholder="item.placeholder || '请输入'"
-      :allowClear="item.allowClear !== false"
-      :disabled="item.disabled"
-      :value="formValue"
-      @change="(e) => change(e.target.value)"
-    />
-    <nf-select
-      v-else-if="item.type === 'select'"
-      :style="{ width: `${item.width || 200}px` }"
-      :placeholder="item.placeholder || '请选择'"
-      :allowClear="item.allowClear !== false"
-      :options="item.options"
-      :mode="item.mode"
-      :value="formValue"
-      @change="change"
-    />
-    <a-checkbox-group
-      v-else-if="item.type === 'checkbox'"
-      :value="formValue"
-      @change="change"
-    >
-      <a-checkbox
-        v-for="(item, key) in item.options"
-        :key="key"
-        :value="item.value"
-      >
-        {{ item.label }}
-      </a-checkbox>
-    </a-checkbox-group>
-    <a-radio-group
-      v-else-if="item.type === 'radio'"
-      :value="formValue"
-      @change="change"
-    >
-      <a-radio
-        v-for="(item, key) in item.options"
-        :key="key"
-        :value="item.value"
-      >
-        {{ item.label }}
-      </a-radio>
-    </a-radio-group>
-    <a-month-picker
-      v-else-if="item.type === 'month-picker'"
-      :style="{ width: `${item.width || 200}px` }"
-      :placeholder="item.placeholder || '请选择'"
-      :value-format="item.valueFormat || 'YYYY-MM'"
-      format="YYYY-MM"
-      :value="formValue || null"
-      :allow-clear="item.allowClear !== false"
-      :disabled-date="item.disabledDate"
-      @change="change"
-    />
-    <a-date-picker
-      v-else-if="item.type === 'date-picker'"
-      :placeholder="item.placeholder || '请选择日期'"
-      :value-format="item.valueFormat || 'YYYY-MM-DD'"
-      format="YYYY-MM-DD"
-      :value="formValue || null"
-      :allowClear="item.allowClear !== false"
-      @change="change"
-    />
-    <a-range-picker
-      v-else-if="item.type === 'month-range-picker'"
-      :placeholder="item.placeholder || ['起始月份', '结束月份']"
-      format="YYYY-MM"
-      :value-format="item.valueFormat || 'YYYY-MM'"
-      :value="formValue || []"
-      :mode="['month', 'month']"
-      :allow-clear="item.allowClear !== false"
-      @panelChange="change"
-      @change="change"
-    />
-    <a-range-picker
-      v-else-if="item.type === 'range-picker'"
-      :placeholder="item.placeholder || ['起始日期', '截止日期']"
-      format="YYYY-MM-DD"
-      :value-format="item.valueFormat || 'YYYY-MM-DD'"
-      :value="formValue || []"
-      :allow-clear="item.allowClear !== false"
-      @change="change"
-    />
-  </a-form-model-item>
+  <!-- 单行文本 -->
+  <a-input
+    v-if="type === 'input'"
+    :style="`width:${options.width}`"
+    :disabled="options.disabled"
+    :placeholder="options.placeholder || '请输入'"
+    :allowClear="options.allowClear"
+    :maxLength="options.maxLength"
+    :value="value"
+    @change="handleChange($event.target.value, model)"
+    v-decorator="[
+      model, // input 的 name
+      {
+        initialValue: options.defaultValue, // 默认值
+        rules: rules, // 验证规则
+      },
+    ]"
+  />
+  <!-- 多行文本 -->
+  <a-textarea
+    v-else-if="type === 'textarea'"
+    :style="`width:${options.width}`"
+    :autoSize="{
+      minRows: options.minRows,
+      maxRows: options.maxRows,
+    }"
+    :disabled="options.disabled"
+    :placeholder="options.placeholder || '请输入'"
+    :allowClear="options.allowClear"
+    :maxLength="options.maxLength"
+    :rows="4"
+    :value="value"
+    @change="handleChange($event.target.value, model)"
+    v-decorator="[
+      model, // input 的 name
+      {
+        initialValue: options.defaultValue, // 默认值
+        rules: rules, // 验证规则
+      },
+    ]"
+  />
+
+  <!-- 日期选择 -->
+  <NfDatePicker
+    v-else-if="type === 'date'"
+    :width="options.width"
+    :disabled="options.disabled"
+    :allowClear="options.allowClear"
+    :placeholder="options.placeholder"
+    :showTime="options.showTime"
+    :format="options.format"
+    :range="options.range"
+    :value="value"
+    @change="handleChange($event, model)"
+    v-decorator="[
+      model, // input 的 name
+      {
+        initialValue: options.defaultValue, // 默认值
+        rules: rules, // 验证规则
+      },
+    ]"
+  />
+  <!-- 时间选择 -->
+  <NfTimePicker
+    v-else-if="type === 'time'"
+    :width="options.width"
+    :disabled="options.disabled"
+    :allowClear="options.allowClear"
+    :placeholder="options.placeholder"
+    :format="options.format"
+    :value="value"
+    @change="handleChange($event, model)"
+    v-decorator="[
+      model, // input 的 name
+      {
+        initialValue: options.defaultValue, // 默认值
+        rules: rules, // 验证规则
+      },
+    ]"
+  />
+  <!-- 数字输入框 -->
+  <a-input-number
+    v-else-if="type === 'number'"
+    :style="`width:${options.width}`"
+    :min="options.min || options.min === 0 ? options.min : -Infinity"
+    :max="options.max || options.max === 0 ? options.max : Infinity"
+    :disabled="disabled || options.disabled"
+    :step="options.step"
+    :precision="
+      options.precision > 50 || (!options.precision && options.precision !== 0)
+        ? null
+        : options.precision
+    "
+    :placeholder="options.placeholder"
+    :value="value"
+    @change="handleChange($event, model)"
+    v-decorator="[
+      model,
+      {
+        initialValue: options.defaultValue,
+        rules: rules,
+      },
+    ]"
+  />
+  <!-- 单选框 -->
+  <a-radio-group
+    v-else-if="type === 'radio'"
+    :options="
+      !options.dynamic
+        ? options.options
+        : dynamicData[options.dynamicKey]
+        ? dynamicData[options.dynamicKey]
+        : []
+    "
+    :disabled="disabled || options.disabled"
+    :placeholder="options.placeholder"
+    :value="value"
+    @change="handleChange($event.target.value, model)"
+    v-decorator="[
+      model,
+      {
+        initialValue: options.defaultValue,
+        rules: rules,
+      },
+    ]"
+  />
+  <!-- 多选框 -->
+  <a-checkbox-group
+    v-else-if="type === 'checkbox'"
+    :options="
+      !options.dynamic
+        ? options.options
+        : dynamicData[options.dynamicKey]
+        ? dynamicData[options.dynamicKey]
+        : []
+    "
+    :disabled="disabled || options.disabled"
+    :placeholder="options.placeholder"
+    :value="value || []"
+    @change="handleChange($event, model)"
+    v-decorator="[
+      model,
+      {
+        initialValue: options.defaultValue,
+        rules: rules,
+      },
+    ]"
+  />
+  <!-- 评分 -->
+  <a-rate
+    v-else-if="type === 'rate'"
+    :count="options.max"
+    :disabled="disabled || options.disabled"
+    :placeholder="options.placeholder"
+    :allowHalf="options.allowHalf"
+    :value="value || 0"
+    @change="handleChange($event, model)"
+    v-decorator="[
+      model,
+      {
+        initialValue: options.defaultValue,
+        rules: rules,
+      },
+    ]"
+  />
+  <!-- 下拉选框 -->
+  <nf-select
+    v-else-if="type === 'select'"
+    :style="`width:${options.width}`"
+    :placeholder="options.placeholder || '请选择'"
+    :showSearch="options.showSearch"
+    :options="
+      !options.dynamic
+        ? options.options
+        : dynamicData[options.dynamicKey]
+        ? dynamicData[options.dynamicKey]
+        : []
+    "
+    :disabled="disabled || options.disabled"
+    :allowClear="options.allowClear"
+    :mode="options.multiple ? 'multiple' : ''"
+    :value="value"
+    @change="handleChange($event, model)"
+    v-decorator="[
+      model,
+      {
+        initialValue: options.defaultValue,
+        rules: rules,
+      },
+    ]"
+  />
+  <!-- 开关 -->
+  <a-switch
+    v-else-if="type === 'switch'"
+    :disabled="disabled || options.disabled"
+    :value="value"
+    @change="handleChange($event, model)"
+    v-decorator="[
+      model,
+      {
+        initialValue: options.defaultValue,
+        valuePropName: 'checked',
+        rules: rules,
+      },
+    ]"
+  />
+  <!-- 上传图片 -->
+  <NfUploadImg
+    v-else-if="type === 'uploadImg'"
+    :style="`width:${options.width}`"
+    :disabled="disabled || options.disabled"
+    :limit="options.limit"
+    :text="options.text"
+    :value="value"
+    @change="handleChange($event, model)"
+    v-decorator="[
+      model,
+      {
+        initialValue: options.defaultValue,
+        rules: rules,
+      },
+    ]"
+  />
+  <!-- <a-month-picker
+    v-else-if="options.type === 'month-picker'"
+    :style="{ width: `${options.width || 200}px` }"
+    :placeholder="options.placeholder || '请选择'"
+    :value-format="options.valueFormat || 'YYYY-MM'"
+    format="YYYY-MM"
+    :value="formValue || null"
+    :allow-clear="options.allowClear !== false"
+    :disabled-date="options.disabledDate"
+    @change="change"
+  />
+  <a-date-picker
+    v-else-if="options.type === 'date-picker'"
+    :placeholder="options.placeholder || '请选择日期'"
+    :value-format="options.valueFormat || 'YYYY-MM-DD'"
+    format="YYYY-MM-DD"
+    :value="formValue || null"
+    :allowClear="options.allowClear !== false"
+    @change="change"
+  />
+  <a-range-picker
+    v-else-if="options.type === 'month-range-picker'"
+    :placeholder="options.placeholder || ['起始月份', '结束月份']"
+    format="YYYY-MM"
+    :value-format="options.valueFormat || 'YYYY-MM'"
+    :value="formValue || []"
+    :mode="['month', 'month']"
+    :allow-clear="options.allowClear !== false"
+    @panelChange="change"
+    @change="change"
+  />
+  <a-range-picker
+    v-else-if="options.type === 'range-picker'"
+    :placeholder="options.placeholder || ['起始日期', '截止日期']"
+    format="YYYY-MM-DD"
+    :value-format="options.valueFormat || 'YYYY-MM-DD'"
+    :value="formValue || []"
+    :allow-clear="options.allowClear !== false"
+    @change="change"
+  /> -->
+  <!-- 树选择器 -->
+  <a-tree-select
+    v-else-if="type === 'treeSelect'"
+    :style="`width:${options.width || '100%'}`"
+    :placeholder="options.placeholder || '请选择'"
+    :multiple="options.multiple"
+    :showSearch="options.showSearch"
+    :treeCheckable="options.treeCheckable"
+    :treeData="
+      !options.dynamic
+        ? options.options
+        : dynamicData[options.dynamicKey]
+        ? dynamicData[options.dynamicKey]
+        : []
+    "
+    :disabled="disabled || options.disabled"
+    :allowClear="options.allowClear"
+    :value="value || undefined"
+    @change="handleChange($event)"
+  />
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component, Emit, Watch } from "vue-property-decorator";
-import NfSelect from "../Select";
+import { Vue, Prop, Component, Emit } from "vue-property-decorator";
 
-@Component({
-  components: {
-    "nf-select": NfSelect,
-  },
-})
+@Component
 export default class FormItem extends Vue {
-  @Prop({ type: [String, Number, Array] })
+  @Prop({ type: String })
+  type;
+  @Prop({ type: Boolean })
+  disabled;
+  @Prop({ type: [String, Number, Array, Boolean] })
   value;
   @Prop({ type: Object })
-  item;
-
-  formValue: string | number | [] = "";
-
-  @Watch("value")
-  onValueChanged(val: string | number | []): void {
-    this.formValue = val || "";
-  }
+  options;
+  @Prop({ type: Array, default: () => [] })
+  dynamicData;
+  @Prop({ type: String })
+  model;
+  @Prop()
+  rules;
 
   @Emit("change")
   @Emit("input")
-  change(value) {
-    if (this.item.type === "month-range-picker" && value.length) {
-      value = [value[0].format("YYYY-MM"), value[1].format("YYYY-MM")];
-    }
+  handleChange(value) {
     return value;
   }
 }

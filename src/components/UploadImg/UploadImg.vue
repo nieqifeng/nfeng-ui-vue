@@ -3,25 +3,26 @@
     <a-upload
       :defaultFileList="fileList"
       :fileList="fileList"
-      :class="{ 'nf-form-upload': Array.isArray(buttonText) }"
+      :class="{ 'nf-form-upload': Array.isArray(text) }"
       listType="picture-card"
+      :disabled="disabled"
       :multiple="multiple"
       :accept="accept"
       :customRequest="handleUpload"
       :remove="handleRemove"
       @preview="handlePreview"
     >
-      <template v-if="Array.isArray(buttonText)">
+      <template v-if="Array.isArray(text)">
         <template v-for="key in limit">
           <span
             class="nf-form-upload-item"
             :key="key"
-            v-if="key > fileList.length && buttonText.length >= key"
+            v-if="key > fileList.length && text.length >= key"
           >
             <div>
               <a-icon type="plus" />
               <div class="ant-upload-text">
-                {{ buttonText[key] || buttonText[0] }}
+                {{ text[key] || text[0] }}
               </div>
             </div>
           </span>
@@ -30,22 +31,20 @@
       <template v-else>
         <div v-if="fileList.length < limit">
           <a-icon type="plus" />
-          <div class="ant-upload-text">{{ buttonText }}</div>
+          <div class="ant-upload-text">{{ text }}</div>
         </div>
       </template>
     </a-upload>
-    <nf-preview
+    <NfPreview
       :imageList="fileList.map((val) => val.url)"
       :show.sync="show"
       :index.sync="index"
-    ></nf-preview>
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from "vue-property-decorator";
-import NfPreview from "../Preview";
-import defaultThumbUrl from "./pdf2.png";
 
 interface FileInterface {
   uid: number;
@@ -55,19 +54,18 @@ interface FileInterface {
   thumbUrl?: string;
 }
 
-@Component({
-  components: {
-    "nf-preview": NfPreview,
-  },
-})
+@Component
 export default class Upload extends Vue {
+  @Prop({ type: Boolean })
+  disabled;
+
   // 限制上传个数
   @Prop({ default: 1, type: Number })
   limit;
 
   // 按钮文案
-  @Prop({ type: [Array, String] })
-  buttonText;
+  @Prop({ type: [Array, String], default: '上传图片' })
+  text;
 
   // 图片数组
   @Prop({ default: () => [], type: Array })
@@ -89,7 +87,6 @@ export default class Upload extends Vue {
   fileList: Array<FileInterface> = []; // 数据里包含response字段
   show = false;
   index = 0;
-  notImgFile = /[^"]*(\.pdf)/;
 
   @Watch("imageList", { deep: true })
   onImageListChanged(val: Array<object>): void {
@@ -135,9 +132,6 @@ export default class Upload extends Vue {
       status: "uploading",
       percent: 1,
     };
-    if (this.notImgFile.test(file.file.name)) {
-      newFile.thumbUrl = defaultThumbUrl;
-    }
     newFileList.push(newFile);
     this.uploadFunction &&
       this.uploadFunction(file.file).then(
@@ -173,15 +167,13 @@ export default class Upload extends Vue {
 
   filterList(list) {
     return list.map((item, uid) => {
-      const imgUrl = `/api/sysmgr-web/file/download?downloadCode=${item.downloadCode}`;
-      // 判断是否是图片
-      const isImg = !this.notImgFile.test(item.fileName.toLocaleLowerCase());
+      const url = `/api/sysmgr-web/file/download?downloadCode=${item.downloadCode}`;
       const obj = {
         ...item,
         uid,
         name: item.fileName,
         status: "done",
-        url: isImg ? imgUrl : defaultThumbUrl,
+        url,
       };
       return obj;
     });

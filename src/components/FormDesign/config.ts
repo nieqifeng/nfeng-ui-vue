@@ -244,30 +244,30 @@ export const basicsList = [
       }
     ]
   },
-  {
-    type: "slider", // 表单类型
-    label: "滑动输入条", // 标题文字
-    icon: "icon-menu",
-    options: {
-      width: "100%", // 宽度
-      defaultValue: 0, // 默认值， 如果range为true的时候，则需要改成数组,如：[12,15]
-      disabled: false, // 是否禁用
-      hidden: false, // 是否隐藏，false显示，true隐藏
-      min: 0, // 最小值
-      max: 100, // 最大值
-      step: 1, // 步长，取值必须大于 0，并且可被 (max - min) 整除
-      showInput: false // 是否显示输入框，range为true时，请勿开启
-      // range: false // 双滑块模式
-    },
-    model: "",
-    key: "",
-    rules: [
-      {
-        required: false,
-        message: "必填项"
-      }
-    ]
-  },
+  // {
+  //   type: "slider", // 表单类型
+  //   label: "滑动输入条", // 标题文字
+  //   icon: "icon-menu",
+  //   options: {
+  //     width: "100%", // 宽度
+  //     defaultValue: 0, // 默认值， 如果range为true的时候，则需要改成数组,如：[12,15]
+  //     disabled: false, // 是否禁用
+  //     hidden: false, // 是否隐藏，false显示，true隐藏
+  //     min: 0, // 最小值
+  //     max: 100, // 最大值
+  //     step: 1, // 步长，取值必须大于 0，并且可被 (max - min) 整除
+  //     showInput: false // 是否显示输入框，range为true时，请勿开启
+  //     // range: false // 双滑块模式
+  //   },
+  //   model: "",
+  //   key: "",
+  //   rules: [
+  //     {
+  //       required: false,
+  //       message: "必填项"
+  //     }
+  //   ]
+  // },
   {
     type: "uploadFile", // 表单类型
     label: "上传文件", // 标题文字
