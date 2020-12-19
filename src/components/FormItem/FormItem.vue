@@ -222,46 +222,6 @@
       },
     ]"
   />
-  <!-- <a-month-picker
-    v-else-if="options.type === 'month-picker'"
-    :style="{ width: `${options.width || 200}px` }"
-    :placeholder="options.placeholder || '请选择'"
-    :value-format="options.valueFormat || 'YYYY-MM'"
-    format="YYYY-MM"
-    :value="formValue || null"
-    :allow-clear="options.allowClear !== false"
-    :disabled-date="options.disabledDate"
-    @change="change"
-  />
-  <a-date-picker
-    v-else-if="options.type === 'date-picker'"
-    :placeholder="options.placeholder || '请选择日期'"
-    :value-format="options.valueFormat || 'YYYY-MM-DD'"
-    format="YYYY-MM-DD"
-    :value="formValue || null"
-    :allowClear="options.allowClear !== false"
-    @change="change"
-  />
-  <a-range-picker
-    v-else-if="options.type === 'month-range-picker'"
-    :placeholder="options.placeholder || ['起始月份', '结束月份']"
-    format="YYYY-MM"
-    :value-format="options.valueFormat || 'YYYY-MM'"
-    :value="formValue || []"
-    :mode="['month', 'month']"
-    :allow-clear="options.allowClear !== false"
-    @panelChange="change"
-    @change="change"
-  />
-  <a-range-picker
-    v-else-if="options.type === 'range-picker'"
-    :placeholder="options.placeholder || ['起始日期', '截止日期']"
-    format="YYYY-MM-DD"
-    :value-format="options.valueFormat || 'YYYY-MM-DD'"
-    :value="formValue || []"
-    :allow-clear="options.allowClear !== false"
-    @change="change"
-  /> -->
   <!-- 树选择器 -->
   <a-tree-select
     v-else-if="type === 'treeSelect'"
