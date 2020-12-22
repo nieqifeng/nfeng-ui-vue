@@ -222,6 +222,23 @@
       },
     ]"
   />
+  <!-- 上传文件 -->
+  <NfUploadFile
+    v-else-if="type === 'uploadFile'"
+    :style="`width:${options.width}`"
+    :disabled="disabled || options.disabled"
+    :limit="options.limit"
+    :text="options.text"
+    :value="value"
+    @change="handleChange($event, model)"
+    v-decorator="[
+      model,
+      {
+        initialValue: options.defaultValue,
+        rules: rules,
+      },
+    ]"
+  />
   <!-- 树选择器 -->
   <a-tree-select
     v-else-if="type === 'treeSelect'"
@@ -242,6 +259,71 @@
     :value="value || undefined"
     @change="handleChange($event)"
   />
+  <!-- 级联选择器 -->
+  <a-cascader
+    v-else-if="type === 'cascader'"
+    :style="`width:${options.width}`"
+    :placeholder="options.placeholder"
+    :showSearch="options.showSearch"
+    :options="
+      !options.dynamic
+        ? options.options
+        : dynamicData[options.dynamicKey]
+        ? dynamicData[options.dynamicKey]
+        : []
+    "
+    :disabled="disabled || options.disabled"
+    :allowClear="options.clearable"
+    @change="handleChange($event, model)"
+    v-decorator="[
+      model,
+      {
+        initialValue: options.defaultValue,
+        rules: rules,
+      },
+    ]"
+  />
+  <!-- button按钮 -->
+  <a-button
+    v-else-if="type === 'button'"
+    :disabled="disabled || options.disabled"
+    @click="
+      options.handle === 'submit'
+        ? false
+        : options.handle === 'reset'
+        ? $emit('handleReset')
+        : dynamicData[options.dynamicFun]
+        ? dynamicData[options.dynamicFun]()
+        : false
+    "
+    :type="options.type"
+    :html-type="options.handle === 'submit' ? 'submit' : undefined"
+    v-text="options.text"
+  />
+  <!-- alert提示 -->
+  <a-alert
+    v-else-if="type === 'alert'"
+    :message="options.text"
+    :description="options.description"
+    :type="options.type"
+    :showIcon="options.showIcon"
+    :closable="options.closable"
+    :banner="options.banner"
+  />
+  <!-- 文本 -->
+  <label
+    v-else-if="type === 'text'"
+    :style="{ textAlign: options.textAlign }"
+    :class="{ 'ant-form-item-required': options.showRequiredMark }"
+    v-text="options.text"
+  />
+  <!-- html -->
+  <div
+    v-else-if="type === 'html'"
+    v-html="options.defaultValue"
+  />
+  <!-- 分割线 -->
+  <a-divider v-else-if="type === 'divider'" />
 </template>
 
 <script lang="ts">

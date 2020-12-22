@@ -416,46 +416,46 @@ export const basicsList = [
       }
     ]
   },
-  {
-    type: "batch",
-    label: "动态表格",
-    icon: "icon-biaoge",
-    list: [],
-    options: {
-      scrollY: 0,
-      disabled: false,
-      hidden: false, // 是否隐藏，false显示，true隐藏
-      showLabel: false,
-      hideSequence: false,
-      width: "100%"
-    },
-    model: "",
-    key: ""
-  },
-  {
-    type: "editor",
-    label: "富文本",
-    icon: "icon-LC_icon_edit_line_1",
-    list: [],
-    options: {
-      height: 300,
-      placeholder: "请输入",
-      defaultValue: "",
-      chinesization: true,
-      hidden: false, // 是否隐藏，false显示，true隐藏
-      disabled: false,
-      showLabel: false,
-      width: "100%"
-    },
-    model: "",
-    key: "",
-    rules: [
-      {
-        required: false,
-        message: "必填项"
-      }
-    ]
-  },
+  // {
+  //   type: "batch",
+  //   label: "动态表格",
+  //   icon: "icon-biaoge",
+  //   list: [],
+  //   options: {
+  //     scrollY: 0,
+  //     disabled: false,
+  //     hidden: false, // 是否隐藏，false显示，true隐藏
+  //     showLabel: false,
+  //     hideSequence: false,
+  //     width: "100%"
+  //   },
+  //   model: "",
+  //   key: ""
+  // },
+  // {
+  //   type: "editor",
+  //   label: "富文本",
+  //   icon: "icon-LC_icon_edit_line_1",
+  //   list: [],
+  //   options: {
+  //     height: 300,
+  //     placeholder: "请输入",
+  //     defaultValue: "",
+  //     chinesization: true,
+  //     hidden: false, // 是否隐藏，false显示，true隐藏
+  //     disabled: false,
+  //     showLabel: false,
+  //     width: "100%"
+  //   },
+  //   model: "",
+  //   key: "",
+  //   rules: [
+  //     {
+  //       required: false,
+  //       message: "必填项"
+  //     }
+  //   ]
+  // },
   {
     type: "switch", // 表单类型
     label: "开关", // 标题文字
@@ -479,6 +479,7 @@ export const basicsList = [
     label: "按钮", // 标题文字
     icon: "icon-button-remove",
     options: {
+      text: "按钮",
       type: "primary",
       handle: "submit",
       dynamicFun: "",
@@ -492,6 +493,7 @@ export const basicsList = [
     label: "警告提示",
     icon: "icon-zu",
     options: {
+      text: "警告提示",
       type: "success",
       description: "",
       showIcon: false,
@@ -506,6 +508,7 @@ export const basicsList = [
     label: "文字",
     icon: "icon-zihao",
     options: {
+      text: "文字",
       textAlign: "left",
       hidden: false, // 是否隐藏，false显示，true隐藏
       showRequiredMark: false
@@ -567,6 +570,7 @@ export const layoutList = [
     label: "分割线",
     icon: "icon-fengexian",
     options: {
+      text: "分割线",
       orientation: "left"
     },
     key: "",

@@ -3,14 +3,18 @@
   <aside class="form-design-left">
     <a-collapse default-active-key="1">
       <!-- 基础控件 start -->
-      <a-collapse-panel key="1" header="基础控件">
+      <a-collapse-panel v-if="basicsList.length > 0" header="基础控件" key="1">
         <draggable
           class="dragArea list-group"
-          :list="list"
+          :list="basicsList"
           :group="{ name: 'form-draggable', pull: 'clone', put: false }"
           :clone="cloneDog"
         >
-          <div class="list-group-item" v-for="(item, key) in list" :key="key">
+          <div
+            class="list-group-item"
+            v-for="(item, key) in basicsList"
+            :key="key"
+          >
             <svg v-if="item.icon" class="icon" aria-hidden="true">
               <use :xlink:href="`#${item.icon}`"></use>
             </svg>
@@ -19,14 +23,36 @@
         </draggable>
       </a-collapse-panel>
       <!-- 基础控件 end -->
+      <!-- 布局控件 start -->
+      <a-collapse-panel v-if="layoutList.length > 0" header="布局控件" key="4">
+        <draggable
+          class="dragArea list-group"
+          :list="layoutList"
+          :group="{ name: 'form-draggable', pull: 'clone', put: false }"
+          :clone="cloneDog"
+        >
+          <div
+            class="list-group-item"
+            v-for="(item, key) in layoutList"
+            :key="key"
+          >
+            <svg v-if="item.icon" class="icon" aria-hidden="true">
+              <use :xlink:href="`#${item.icon}`"></use>
+            </svg>
+            {{ item.label }}
+          </div>
+        </draggable>
+      </a-collapse-panel>
+      <!-- 布局控件 end -->
     </a-collapse>
   </aside>
   <!-- 左侧控件区域 end -->
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import draggable from "vuedraggable";
+import { basicsList, layoutList } from "./config";
 
 @Component({
   components: {
@@ -34,8 +60,8 @@ import draggable from "vuedraggable";
   },
 })
 export default class LeftSide extends Vue {
-  @Prop({ type: Array, default: () => [] })
-  list;
+  basicsList = basicsList;
+  layoutList = layoutList;
 
   cloneDog(item) {
     const model = item.type + "_" + new Date().getTime();
