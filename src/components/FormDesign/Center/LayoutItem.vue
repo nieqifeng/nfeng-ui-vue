@@ -6,23 +6,29 @@
         <a-card class="grid-row" :title="record.label">
           <div class="grid-col">
             <draggable
+              tag="div"
               class="draggable-box"
-              group="form-draggable"
-              :list="record.list"
+              v-bind="{
+                group: 'form-draggable',
+                ghostClass: 'moving',
+                animation: 180,
+                handle: '.drag-move',
+              }"
+              v-model="record.list"
             >
-              <!-- <transition-group tag="div" name="list" class="list-main"> -->
-              <layoutItem
-                class="drag-move"
-                v-for="(item, key) in record.list"
-                :key="key"
-                :record="item"
-              />
-              <!-- </transition-group> -->
+              <transition-group tag="div" name="list" class="list-main">
+                <layoutItem
+                  class="drag-move"
+                  v-for="item in record.list"
+                  :key="item.model"
+                  :record="item"
+                />
+              </transition-group>
             </draggable>
           </div>
         </a-card>
 
-        <!-- <div
+        <div
           class="copy"
           :class="record.model === selectItem.model ? 'active' : 'unactivated'"
           @click.stop="$emit('handleCopy')"
@@ -35,7 +41,7 @@
           @click.stop="$emit('handleDelete')"
         >
           <a-icon type="delete" />
-        </div> -->
+        </div>
       </div>
     </template>
     <!-- 卡片布局 end -->
@@ -54,14 +60,14 @@
               group="form-draggable"
               :list="colItem.list"
             >
-              <!-- <transition-group tag="div" name="list" class="list-main"> -->
-              <layoutItem
-                class="drag-move"
-                v-for="(item, key) in colItem.list"
-                :key="key"
-                :record="item"
-              />
-              <!-- </transition-group> -->
+              <transition-group tag="div" name="list" class="list-main">
+                <layoutItem
+                  class="drag-move"
+                  v-for="item in colItem.list"
+                  :key="item.model"
+                  :record="item"
+                />
+              </transition-group>
             </draggable>
           </a-col>
         </a-row>
@@ -142,13 +148,20 @@
     </template>
     <!-- 表格布局 end -->
     <template v-else>
-      <FormNode :record="record" />
+      <FormNode
+        :selectItem.sync="selectItem"
+        :record="record"
+        :UISchema="UISchema"
+        @handleSelectItem="handleSelectItem"
+        @handleCopy="$emit('handleCopy')"
+        @handleDelete="$emit('handleDelete')"
+      />
     </template>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 import draggable from "vuedraggable";
 import FormNode from "./FormNode.vue";
 
@@ -162,17 +175,103 @@ export default class LayoutItem extends Vue {
   @Prop({ type: Object, default: () => {} })
   record;
   @Prop({ type: Object })
+  UISchema;
+  @Prop({ type: Object })
   selectItem;
+
+  @Emit("handleSelectItem")
+  handleSelectItem(record) {
+    return record;
+  }
 }
 </script>
 
-<style lang="less">
-.grid-box {
-  .draggable-box {
-    min-height: 60px;
-    min-width: 50px;
-    border: 1px #ccc dashed;
-    background: #fff;
+<style lang="less" scoped>
+.batch-box,
+.grid-box,
+.table-box {
+  position: relative;
+  box-sizing: border-box;
+  padding: 5px;
+  background: fade(#9867f7, 12%);
+  width: 100%;
+  transition: all 0.3s;
+  overflow: hidden;
+
+  .grid-row,
+  .table-layout {
+    background: fade(#9867f7, 12%);
+
+    .grid-col,
+    .table-td {
+      .draggable-box {
+        min-height: 60px;
+        min-width: 50px;
+        border: 1px #ccc dashed;
+        background: #fff;
+
+        .list-main {
+          min-height: 60px;
+          position: relative;
+          border: 1px #ccc dashed;
+        }
+      }
+    }
+  }
+
+  // 选择时 start
+  &::before {
+    content: "";
+    height: 5px;
+    width: 100%;
+    background: transparent;
+    position: absolute;
+    top: 0;
+    right: -100%;
+    transition: all 0.3s;
+  }
+
+  &.active {
+    &::before {
+      background: #9867f7;
+      right: 0;
+    }
+
+    background: fade(#9867f7, 24%);
+    outline-offset: 0;
+  }
+
+  > .copy,
+  > .delete {
+    position: absolute;
+    top: 0px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: #fff;
+    z-index: 989;
+    transition: all 0.3s;
+
+    &.unactivated {
+      opacity: 0 !important;
+      pointer-events: none;
+    }
+
+    &.active {
+      opacity: 1 !important;
+    }
+  }
+
+  > .copy {
+    border-radius: 0 0 0 8px;
+    right: 30px;
+    background: #9867f7;
+  }
+
+  > .delete {
+    right: 0px;
+    background: #9867f7;
   }
 }
 </style>

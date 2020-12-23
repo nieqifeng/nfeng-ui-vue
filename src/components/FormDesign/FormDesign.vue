@@ -3,7 +3,17 @@
     <nf-header></nf-header>
     <div class="content show-head">
       <left-side></left-side>
-      <nf-section></nf-section>
+      <section>
+        <!-- 操作区域 start -->
+        <NfOperatingArea @handleReset="handleReset"></NfOperatingArea>
+        <!-- 操作区域 end -->
+        <NfFormPanel
+          :list="list"
+          :UISchema="UISchema"
+          :selectItem="selectItem"
+          @handleSetSelectItem="handleSetSelectItem"
+        />
+      </section>
     </div>
   </div>
 </template>
@@ -12,22 +22,74 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import Header from "./Header/Header.vue";
 import LeftSide from "./LeftSide/LeftSide.vue";
-import Section from "./Section/Section.vue";
+import OperatingArea from "./Center/OperatingArea.vue";
+import FormPanel from "./Center/FormPanel.vue";
 
 @Component({
   components: {
     "nf-header": Header,
     "left-side": LeftSide,
-    "nf-section": Section,
+    NfFormPanel: FormPanel,
+    NfOperatingArea: OperatingArea,
   },
 })
 export default class FormDesign extends Vue {
   @Prop({ type: Object, default: () => {} })
   private JSONSchema;
-  @Prop({ type: Object, default: () => {} })
+  @Prop({
+    type: Object,
+    default: () => {
+      return {
+        layout: "horizontal",
+        labelCol: { xs: 4, sm: 4, md: 4, lg: 4, xl: 4, xxl: 4 },
+        wrapperCol: { xs: 18, sm: 18, md: 18, lg: 18, xl: 18, xxl: 18 },
+      };
+    },
+  })
   private UISchema;
   @Prop({ type: Object, default: () => {} })
   private formData;
+
+  updateTime = 0;
+  list = [];
+  selectItem = {};
+
+  handleReset() {
+    // 清空
+    this.$confirm({
+      title: "警告",
+      content: "是否确认清空内容?",
+      okText: "是",
+      okType: "danger",
+      cancelText: "否",
+      onOk: () => {
+        this.list = [];
+        this.handleSetSelectItem({});
+        this.$message.success("已清空");
+      },
+    });
+  }
+
+  handleSetSelectItem(record) {
+    // 操作间隔不能低于100毫秒
+    let newTime = new Date().getTime();
+    if (newTime - this.updateTime < 100) {
+      return false;
+    }
+
+    this.updateTime = newTime;
+
+    // 设置selectItem的值
+    this.selectItem = record;
+
+    // 判断是否选中控件，如果选中则弹出属性面板，否则关闭属性面板
+    // if (record.key) {
+    //   this.startType = record.type;
+    //   this.showPropertie = true;
+    // } else {
+    //   this.showPropertie = false;
+    // }
+  }
 }
 </script>
 

@@ -1,0 +1,213 @@
+<template>
+  <div class="form-panel">
+    <p class="hint-text" v-show="list.length === 0">
+      从左侧选择控件添加
+    </p>
+    <a-form class="a-form-box" :layout="UISchema.layout">
+      <draggable
+        tag="div"
+        class="draggable-box"
+        v-bind="{
+          group: 'form-draggable',
+          ghostClass: 'moving',
+          animation: 180,
+          handle: '.drag-move',
+        }"
+        v-model="list"
+        @add="onAdd"
+      >
+        <transition-group tag="div" name="list" class="list-main">
+          <LayoutItem
+            v-for="record in list"
+            :key="record.model"
+            :record="record"
+            :UISchema="UISchema"
+            :selectItem.sync="selectItem"
+            @handleSelectItem="handleSelectItem"
+            @handleCopy="handleCopy"
+            @handleDelete="handleDelete"
+          />
+        </transition-group>
+      </draggable>
+    </a-form>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Emit, Prop, Vue } from "vue-property-decorator";
+import draggable from "vuedraggable";
+import LayoutItem from "./LayoutItem.vue";
+
+@Component({
+  components: {
+    draggable,
+    LayoutItem,
+  },
+})
+export default class FormPanel extends Vue {
+  @Prop({ type: Object })
+  UISchema;
+  @Prop({ type: Object, default: () => {} })
+  selectItem;
+  @Prop({ type: Array, default: () => [] })
+  list;
+
+  @Emit("handleSetSelectItem")
+  onAdd(evt) {
+    const { newIndex } = evt;
+    const selectItem = this.list[newIndex];
+    return selectItem;
+  }
+
+  @Emit("handleSetSelectItem")
+  handleSelectItem(record) {
+    // 修改选择Item
+    return record;
+  }
+
+  handleCopy(isCopy = true, data) {
+    const traverse = (array) => {
+      array.forEach((element, index) => {
+        if (element.model === this.selectItem.model) {
+          if (isCopy) {
+            // 复制添加到选择节点后面
+            array.splice(index + 1, 0, {
+              ...element,
+              model: element.type + "_" + new Date().getTime(),
+            });
+          } else {
+            // 双击添加到选择节点后面
+            array.splice(index + 1, 0, data);
+          }
+          return;
+        }
+        if (element.type === "grid" || element.type === "tabs") {
+          // 栅格布局
+          element.columns.forEach((item) => {
+            traverse(item.list);
+          });
+        } else if (element.type === "card") {
+          // 卡片布局
+          traverse(element.list);
+        }
+        if (element.type === "table") {
+          // 表格布局
+          element.trs.forEach((item) => {
+            item.tds.forEach((val) => {
+              traverse(val.list);
+            });
+          });
+        }
+      });
+    };
+    traverse(this.list);
+  }
+
+  handleDelete() {
+    const traverse = (array) => {
+      array = array.filter((element, index) => {
+        if (element.type === "grid" || element.type === "tabs") {
+          // 栅格布局
+          element.columns.forEach((item) => {
+            item.list = traverse(item.list);
+          });
+        }
+        if (element.type === "card" || element.type === "batch") {
+          // 卡片布局
+          element.list = traverse(element.list);
+        }
+        if (element.type === "table") {
+          // 表格布局
+          element.trs.forEach((item) => {
+            item.tds.forEach((val) => {
+              val.list = traverse(val.list);
+            });
+          });
+        }
+        if (element.model !== this.selectItem.model) {
+          return true;
+        } else {
+          if (array.length === 1) {
+            // this.handleSelectItem({ key: "" });
+            this.handleSelectItem({});
+          } else if (array.length - 1 > index) {
+            this.handleSelectItem(array[index + 1]);
+          } else {
+            this.handleSelectItem(array[index - 1]);
+          }
+          return false;
+        }
+      });
+      return array;
+    };
+
+    this.list = traverse(this.list);
+  }
+}
+</script>
+
+<style lang="less">
+// 中间内容区域
+section {
+  flex: 1;
+  margin: 0 8px;
+  user-select: none;
+  box-shadow: 0px 0px 1px 1px #ccc;
+
+  // 内容操作区域
+  .form-panel {
+    height: 100%;
+    background: #eee;
+    position: relative;
+
+    > .hint-text {
+      position: absolute;
+      left: 0;
+      top: 45%;
+      width: 100%;
+      text-align: center;
+      font-size: 20px;
+      color: #aaa;
+      z-index: 16;
+    }
+
+    .a-form-box {
+      height: 100%;
+    }
+
+    .draggable-box {
+      height: 100%;
+      overflow: auto;
+
+      .list-main {
+        min-height: 100%;
+        padding: 5px;
+        position: relative;
+        background: #fafafa;
+        // border    : 1px #ccc dashed;
+
+        .moving {
+          // 拖放移动中
+          // outline-width: 0;
+          min-height: 35px;
+          box-sizing: border-box;
+          overflow: hidden;
+          padding: 0 !important;
+          // margin       : 3px 0;
+          position: relative;
+
+          &::before {
+            content: "";
+            height: 5px;
+            width: 100%;
+            background: #13c2c2;
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
+        }
+      }
+    }
+  }
+}
+</style>
