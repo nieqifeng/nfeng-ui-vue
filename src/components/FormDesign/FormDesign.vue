@@ -8,7 +8,7 @@
         <NfOperatingArea @handleReset="handleReset"></NfOperatingArea>
         <!-- 操作区域 end -->
         <NfFormPanel
-          :list="list"
+          :list.sync="list"
           :UISchema="UISchema"
           :selectItem="selectItem"
           @handleSetSelectItem="handleSetSelectItem"
@@ -52,7 +52,9 @@ export default class FormDesign extends Vue {
 
   updateTime = 0;
   list = [];
-  selectItem = {};
+  selectItem = {
+    key: "",
+  };
 
   handleReset() {
     // 清空

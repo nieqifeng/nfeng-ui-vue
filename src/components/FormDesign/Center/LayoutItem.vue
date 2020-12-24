@@ -15,13 +15,20 @@
                 handle: '.drag-move',
               }"
               v-model="record.list"
+              @add="$emit('handleColAdd', $event, record.list)"
             >
               <transition-group tag="div" name="list" class="list-main">
                 <layoutItem
                   class="drag-move"
                   v-for="item in record.list"
-                  :key="item.model"
+                  :key="item.key"
                   :record="item"
+                  :UISchema="UISchema"
+                  :selectItem.sync="selectItem"
+                  @handleSelectItem="handleSelectItem"
+                  @handleColAdd="handleColAdd"
+                  @handleCopy="$emit('handleCopy')"
+                  @handleDelete="$emit('handleDelete')"
                 />
               </transition-group>
             </draggable>
@@ -30,14 +37,14 @@
 
         <div
           class="copy"
-          :class="record.model === selectItem.model ? 'active' : 'unactivated'"
+          :class="record.key === selectItem.key ? 'active' : 'unactivated'"
           @click.stop="$emit('handleCopy')"
         >
           <a-icon type="copy" />
         </div>
         <div
           class="delete"
-          :class="record.model === selectItem.model ? 'active' : 'unactivated'"
+          :class="record.key === selectItem.key ? 'active' : 'unactivated'"
           @click.stop="$emit('handleDelete')"
         >
           <a-icon type="delete" />
@@ -64,7 +71,7 @@
                 <layoutItem
                   class="drag-move"
                   v-for="item in colItem.list"
-                  :key="item.model"
+                  :key="item.key"
                   :record="item"
                 />
               </transition-group>
@@ -182,6 +189,10 @@ export default class LayoutItem extends Vue {
   @Emit("handleSelectItem")
   handleSelectItem(record) {
     return record;
+  }
+
+  handleColAdd(e, list) {
+    this.$emit("handleColAdd", e, list);
   }
 }
 </script>

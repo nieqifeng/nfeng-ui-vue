@@ -2,7 +2,7 @@
   <div
     class="drag-move-box"
     @click.stop="$emit('handleSelectItem', record)"
-    :class="{ active: record.model === selectItem.model }"
+    :class="{ active: record.key === selectItem.key }"
   >
     <div class="form-item-box">
       <a-form-item
@@ -16,7 +16,7 @@
           v-model="value"
           :type="record.type"
           :options="record.options"
-          :key="record.model"
+          :key="record.key"
           :model="record.model"
         />
       </a-form-item>
@@ -24,14 +24,14 @@
     <div class="show-key-box" v-text="record.model" />
     <div
       class="copy"
-      :class="record.model === selectItem.model ? 'active' : 'unactivated'"
+      :class="record.key === selectItem.key ? 'active' : 'unactivated'"
       @click.stop="$emit('handleCopy')"
     >
       <a-icon type="copy" />
     </div>
     <div
       class="delete"
-      :class="record.model === selectItem.model ? 'active' : 'unactivated'"
+      :class="record.key === selectItem.key ? 'active' : 'unactivated'"
       @click.stop="$emit('handleDelete')"
     >
       <a-icon type="delete" />

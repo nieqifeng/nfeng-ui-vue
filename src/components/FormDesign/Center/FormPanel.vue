@@ -19,13 +19,14 @@
         <transition-group tag="div" name="list" class="list-main">
           <LayoutItem
             v-for="record in list"
-            :key="record.model"
+            :key="record.key"
             :record="record"
             :UISchema="UISchema"
             :selectItem.sync="selectItem"
             @handleSelectItem="handleSelectItem"
             @handleCopy="handleCopy"
             @handleDelete="handleDelete"
+            @handleColAdd="handleColAdd"
           />
         </transition-group>
       </draggable>
@@ -49,14 +50,20 @@ export default class FormPanel extends Vue {
   UISchema;
   @Prop({ type: Object, default: () => {} })
   selectItem;
-  @Prop({ type: Array, default: () => [] })
-  list;
+  // @Prop({ type: Array, default: () => [] })
+  list = [];
 
   @Emit("handleSetSelectItem")
   onAdd(evt) {
     const { newIndex } = evt;
     const selectItem = this.list[newIndex];
     return selectItem;
+  }
+
+  @Emit("handleSetSelectItem")
+  handleColAdd(evt, columns) {
+    const { newIndex } = evt;
+    return columns[newIndex];
   }
 
   @Emit("handleSetSelectItem")
@@ -68,17 +75,19 @@ export default class FormPanel extends Vue {
   handleCopy(isCopy = true, data) {
     const traverse = (array) => {
       array.forEach((element, index) => {
-        if (element.model === this.selectItem.model) {
+        if (element.key === this.selectItem.key) {
+          const obj = {
+            ...element,
+            key: element.type + "_" + new Date().getTime(),
+          };
           if (isCopy) {
             // 复制添加到选择节点后面
-            array.splice(index + 1, 0, {
-              ...element,
-              model: element.type + "_" + new Date().getTime(),
-            });
+            array.splice(index + 1, 0, obj);
           } else {
             // 双击添加到选择节点后面
             array.splice(index + 1, 0, data);
           }
+          this.$emit("handleSetSelectItem", obj);
           return;
         }
         if (element.type === "grid" || element.type === "tabs") {
@@ -103,6 +112,7 @@ export default class FormPanel extends Vue {
     traverse(this.list);
   }
 
+  @Emit("update:list")
   handleDelete() {
     const traverse = (array) => {
       array = array.filter((element, index) => {
@@ -124,12 +134,11 @@ export default class FormPanel extends Vue {
             });
           });
         }
-        if (element.model !== this.selectItem.model) {
+        if (element.key !== this.selectItem.key) {
           return true;
         } else {
           if (array.length === 1) {
-            // this.handleSelectItem({ key: "" });
-            this.handleSelectItem({});
+            this.handleSelectItem({ key: "" });
           } else if (array.length - 1 > index) {
             this.handleSelectItem(array[index + 1]);
           } else {
@@ -141,7 +150,7 @@ export default class FormPanel extends Vue {
       return array;
     };
 
-    this.list = traverse(this.list);
+    return traverse(this.list);
   }
 }
 </script>
@@ -209,5 +218,27 @@ section {
       }
     }
   }
+}
+
+// 列表动画
+.list-enter-active {
+  transition: all 0.5s;
+}
+
+.list-leave-active {
+  transition: all 0.3s;
+}
+
+.list-enter,
+.list-leave-to
+
+/* .list-leave-active for below version 2.1.8 */
+ {
+  opacity: 0;
+  transform: translateX(-100px);
+}
+
+.list-enter {
+  height: 30px;
 }
 </style>
