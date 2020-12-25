@@ -14,8 +14,8 @@
           handle: '.drag-move',
         }"
         v-model="list"
-        @add="onAdd"
-      >
+        @add="deepClone"
+      >{{list}}
         <transition-group tag="div" name="list" class="list-main">
           <LayoutItem
             v-for="record in list"
@@ -54,15 +54,25 @@ export default class FormPanel extends Vue {
   list = [];
 
   @Emit("handleSetSelectItem")
-  onAdd(evt) {
+  deepClone(evt) {
     const { newIndex } = evt;
-    const selectItem = this.list[newIndex];
-    return selectItem;
+    // json深拷贝一次
+    const listString = JSON.stringify(this.list);
+    console.log('listString: ', listString);
+    this.list = JSON.parse(listString);
+    // 删除icon及compoent属性
+    // delete this.list[newIndex].icon;
+    // delete this.list[newIndex].component;
+    return this.list[newIndex];
   }
 
   @Emit("handleSetSelectItem")
   handleColAdd(evt, columns) {
+    console.log('columns: ', columns);
     const { newIndex } = evt;
+    // 深拷贝数据
+    const listString = JSON.stringify(columns[newIndex]);
+    columns[newIndex] = JSON.parse(listString);
     return columns[newIndex];
   }
 
@@ -80,6 +90,8 @@ export default class FormPanel extends Vue {
             ...element,
             key: element.type + "_" + new Date().getTime(),
           };
+          console.log(element)
+          console.log(obj)
           if (isCopy) {
             // 复制添加到选择节点后面
             array.splice(index + 1, 0, obj);

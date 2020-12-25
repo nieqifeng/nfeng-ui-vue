@@ -2,7 +2,11 @@
   <div class="drag-move">
     <!-- 卡片布局 start -->
     <template v-if="record.type === 'card'">
-      <div class="grid-box">
+      <div
+        class="grid-box"
+        :class="{ active: record.key === selectItem.key }"
+        @click.stop="handleSelectItem(record)"
+      >
         <a-card class="grid-row" :title="record.label">
           <div class="grid-col">
             <draggable
@@ -22,9 +26,9 @@
                   class="drag-move"
                   v-for="item in record.list"
                   :key="item.key"
+                  :selectItem.sync="selectItem"
                   :record="item"
                   :UISchema="UISchema"
-                  :selectItem.sync="selectItem"
                   @handleSelectItem="handleSelectItem"
                   @handleColAdd="handleColAdd"
                   @handleCopy="$emit('handleCopy')"
@@ -54,32 +58,49 @@
     <!-- 卡片布局 end -->
     <!-- 栅格布局 start -->
     <template v-else-if="record.type === 'grid'">
-      <div class="grid-box">
+      <div
+        class="grid-box"
+        :class="{ active: record.key === selectItem.key }"
+        @click.stop="handleSelectItem(record)"
+      >
         <a-row class="grid-row" :gutter="record.options.gutter">
           <a-col
             class="grid-col"
-            v-for="(colItem, k) in record.columns"
-            :key="k"
+            v-for="(colItem, idnex) in record.columns"
+            :key="idnex"
             :span="colItem.span || 0"
           >
             <draggable
+              tag="div"
               class="draggable-box"
-              group="form-draggable"
-              :list="colItem.list"
+              v-bind="{
+                group: 'form-draggable',
+                ghostClass: 'moving',
+                animation: 180,
+                handle: '.drag-move',
+              }"
+              v-model="colItem.list"
+              @add="$emit('handleColAdd', $event, colItem.list)"
             >
               <transition-group tag="div" name="list" class="list-main">
                 <layoutItem
                   class="drag-move"
                   v-for="item in colItem.list"
                   :key="item.key"
+                  :selectItem.sync="selectItem"
                   :record="item"
+                  :UISchema="UISchema"
+                  @handleSelectItem="handleSelectItem"
+                  @handleColAdd="handleColAdd"
+                  @handleCopy="$emit('handleCopy')"
+                  @handleDelete="$emit('handleDelete')"
                 />
               </transition-group>
             </draggable>
           </a-col>
         </a-row>
 
-        <!-- <div
+        <div
           class="copy"
           :class="record.key === selectItem.key ? 'active' : 'unactivated'"
           @click.stop="$emit('handleCopy')"
@@ -92,13 +113,17 @@
           @click.stop="$emit('handleDelete')"
         >
           <a-icon type="delete" />
-        </div> -->
+        </div>
       </div>
     </template>
     <!-- 栅格布局 end -->
     <!-- 表格布局 start -->
     <template v-else-if="record.type === 'table'">
-      <div class="table-box">
+      <div
+        class="table-box"
+        :class="{ active: record.key === selectItem.key }"
+        @click.stop="handleSelectItem(record)"
+      >
         <table
           class="table-layout kk-table-9136076486841527"
           :class="{
@@ -120,24 +145,37 @@
               "
             >
               <draggable
+                tag="div"
                 class="draggable-box"
-                group="form-draggable"
-                :list="tdItem.list"
+                v-bind="{
+                  group: 'form-draggable',
+                  ghostClass: 'moving',
+                  animation: 180,
+                  handle: '.drag-move',
+                }"
+                v-model="tdItem.list"
+                @add="$emit('handleColAdd', $event, tdItem.list)"
               >
-                <!-- <transition-group tag="div" name="list" class="list-main"> -->
-                <layoutItem
-                  class="drag-move"
-                  v-for="(item, key) in tdItem.list"
-                  :key="key"
-                  :record="item"
-                />
-                <!-- </transition-group> -->
+                <transition-group tag="div" name="list" class="list-main">
+                  <layoutItem
+                    class="drag-move"
+                    v-for="item in tdItem.list"
+                    :key="item.key"
+                    :selectItem.sync="selectItem"
+                    :record="item"
+                    :UISchema="UISchema"
+                    @handleSelectItem="handleSelectItem"
+                    @handleColAdd="handleColAdd"
+                    @handleCopy="$emit('handleCopy')"
+                    @handleDelete="$emit('handleDelete')"
+                  />
+                </transition-group>
               </draggable>
             </td>
           </tr>
         </table>
 
-        <!-- <div
+        <div
           class="copy"
           :class="record.key === selectItem.key ? 'active' : 'unactivated'"
           @click.stop="$emit('handleCopy')"
@@ -150,7 +188,7 @@
           @click.stop="$emit('handleDelete')"
         >
           <a-icon type="delete" />
-        </div> -->
+        </div>
       </div>
     </template>
     <!-- 表格布局 end -->
@@ -188,11 +226,14 @@ export default class LayoutItem extends Vue {
 
   @Emit("handleSelectItem")
   handleSelectItem(record) {
+    console.log("record: ", record);
     return record;
   }
 
   handleColAdd(e, list) {
-    this.$emit("handleColAdd", e, list);
+    console.log("list: ", list);
+    console.log("e: ", e);
+    // this.$emit("handleColAdd", e, list);
   }
 }
 </script>
@@ -283,6 +324,53 @@ export default class LayoutItem extends Vue {
   > .delete {
     right: 0px;
     background: #9867f7;
+  }
+}
+
+// 表单设计器-表格样式
+.kk-table-9136076486841527 {
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s;
+  border-collapse: collapse;
+
+  tr {
+    transition: all 0.3s;
+    border-collapse: collapse;
+    td {
+      box-sizing: border-box;
+      transition: all 0.3s;
+      padding: 12px 12px;
+      border-collapse: collapse;
+      vertical-align: top;
+    }
+  }
+  &.bordered {
+    // 添加边框
+    tr {
+      td {
+        border: 1px solid #e8e8e8 !important;
+      }
+    }
+  }
+  &.bright {
+    // 点亮行
+    tr {
+      &:hover > td {
+        background: #e6f7ff;
+      }
+    }
+  }
+  &.small {
+    // 紧凑型
+    tr {
+      td {
+        padding: 8px 8px;
+      }
+    }
+  }
+  .ant-row.ant-form-item {
+    margin: 0 !important;
   }
 }
 </style>
