@@ -15,6 +15,7 @@
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "default-passive-events": "^2.0.0",
+    "k-form-design": "^3.7.2",
     "mockjs": "^1.1.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",

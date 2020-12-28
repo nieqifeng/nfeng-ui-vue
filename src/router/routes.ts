@@ -87,8 +87,12 @@ const routes: Array<RouteConfig> = [
       ]
     },
     {
-      path: '/design',
-      component: () => import('../example/Design/Design.vue')
+      path: '/k-form-design',
+      component: () => import('../example/KFormDesign/k-form-design.vue')
+    },
+    {
+      path: '/k-form-build',
+      component: () => import('../example/KFormDesign/k-form-build.vue')
     }
   ]
 

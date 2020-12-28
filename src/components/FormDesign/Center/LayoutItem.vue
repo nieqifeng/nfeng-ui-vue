@@ -18,7 +18,7 @@
                 animation: 180,
                 handle: '.drag-move',
               }"
-              v-model="record.list"
+              :list="record.list"
               @add="$emit('handleColAdd', $event, record.list)"
             >
               <transition-group tag="div" name="list" class="list-main">
@@ -226,14 +226,11 @@ export default class LayoutItem extends Vue {
 
   @Emit("handleSelectItem")
   handleSelectItem(record) {
-    console.log("record: ", record);
     return record;
   }
 
   handleColAdd(e, list) {
-    console.log("list: ", list);
-    console.log("e: ", e);
-    // this.$emit("handleColAdd", e, list);
+    this.$emit("handleColAdd", e, list);
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <k-form-design :title.sync="title" @changeTitle="changeTitle" :designData="designData" @handleSaveJson="handleSaveJson"/> -->
+    <!-- <k-form-design /> -->
     <nf-form-design :JSONSchema="formOption.JSONSchema"></nf-form-design>
   </div>
 </template>
@@ -9,18 +9,18 @@
 export default {
   data() {
     return {
-      title: '',
+      title: "",
       designData: {},
       formOption: {},
-    }
+    };
   },
   methods: {
     changeTitle(title) {
-      this.title = title
+      this.title = title;
     },
     handleSaveJson() {
       // console.log(val)
-    }
+    },
   },
-}
+};
 </script>

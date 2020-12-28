@@ -4,6 +4,7 @@
       从左侧选择控件添加
     </p>
     <a-form class="a-form-box" :layout="UISchema.layout">
+      <!-- <nestedDraggable :list="list"></nestedDraggable> -->
       <draggable
         tag="div"
         class="draggable-box"
@@ -13,9 +14,8 @@
           animation: 180,
           handle: '.drag-move',
         }"
-        v-model="list"
-        @add="deepClone"
-      >{{list}}
+        :list="list"
+      >
         <transition-group tag="div" name="list" class="list-main">
           <LayoutItem
             v-for="record in list"
@@ -38,11 +38,13 @@
 import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 import draggable from "vuedraggable";
 import LayoutItem from "./LayoutItem.vue";
+import nestedDraggable from "./nested.vue";
 
 @Component({
   components: {
     draggable,
     LayoutItem,
+    nestedDraggable
   },
 })
 export default class FormPanel extends Vue {
@@ -50,15 +52,43 @@ export default class FormPanel extends Vue {
   UISchema;
   @Prop({ type: Object, default: () => {} })
   selectItem;
-  // @Prop({ type: Array, default: () => [] })
-  list = [];
+  @Prop({ type: Array, default: () => [] })
+  list
+
+  tasks = [
+        {
+          key: "task 1",
+          list: [
+            {
+              key: "task 2",
+              list: []
+            }
+          ]
+        },
+        {
+          key: "task 3",
+          list: [
+            {
+              key: "task 4",
+              list: []
+            }
+          ]
+        },
+        {
+          key: "task 5",
+          list: []
+        }
+      ];
+
+  onAdd(evt) {
+    console.log(evt)
+  }
 
   @Emit("handleSetSelectItem")
   deepClone(evt) {
     const { newIndex } = evt;
     // json深拷贝一次
     const listString = JSON.stringify(this.list);
-    console.log('listString: ', listString);
     this.list = JSON.parse(listString);
     // 删除icon及compoent属性
     // delete this.list[newIndex].icon;
@@ -68,7 +98,6 @@ export default class FormPanel extends Vue {
 
   @Emit("handleSetSelectItem")
   handleColAdd(evt, columns) {
-    console.log('columns: ', columns);
     const { newIndex } = evt;
     // 深拷贝数据
     const listString = JSON.stringify(columns[newIndex]);

@@ -64,13 +64,13 @@ export default class LeftSide extends Vue {
   layoutList = layoutList;
 
   cloneDog(element) {
-    return { ...element, key: element.type + "_" + new Date().getTime()};
+    return { ...element, key: element.type + "_" + new Date().getTime(), list: []};
   }
 }
 </script>
 
 <style lang="less">
-.form-design-left {
+aside.form-design-left {
   overflow: auto;
   box-shadow: 0px 0px 1px 1px #ccc;
   width: 270px;
