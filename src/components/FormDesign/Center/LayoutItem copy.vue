@@ -1,43 +1,7 @@
 <template>
-  <draggable
-    tag="div"
-    class="draggable-box"
-    v-bind="{
-      group: 'form-draggable',
-      ghostClass: 'moving',
-      animation: 180,
-      handle: '.drag-move',
-    }"
-    :list="list"
-    @add="$emit('handleColAdd', $event, list)"
-  >
-    <transition-group tag="div" name="list" class="list-main">
-      <div v-for="record in list" :key="record.key">{{record}}
-        <layoutItem
-          v-if="record.type === 'card'"
-          :selectItem.sync="selectItem"
-          :list="record.list"
-          :UISchema="UISchema"
-          @handleSelectItem="handleSelectItem"
-          @handleColAdd="handleColAdd"
-          @handleCopy="$emit('handleCopy')"
-          @handleDelete="$emit('handleDelete')"
-        />
-        <FormNode
-          v-else
-          :selectItem.sync="selectItem"
-          :record="record"
-          :UISchema="UISchema"
-          @handleSelectItem="handleSelectItem"
-          @handleCopy="$emit('handleCopy')"
-          @handleDelete="$emit('handleDelete')"
-        />
-      </div>
-    </transition-group>
-  </draggable>
-  <!-- <div class="drag-move" v-for="record in list" :key="record.key"> -->
-  <!-- 卡片布局 start -->
-  <!-- <template v-if="record.type === 'card'">
+  <div class="drag-move">
+    <!-- 卡片布局 start -->
+    <template v-if="record.type === 'card'">
       <div
         class="grid-box"
         :class="{ active: record.key === selectItem.key }"
@@ -45,6 +9,33 @@
       >
         <a-card class="grid-row" :title="record.label">
           <div class="grid-col">
+            <draggable
+              tag="div"
+              class="draggable-box"
+              v-bind="{
+                group: 'form-draggable',
+                ghostClass: 'moving',
+                animation: 180,
+                handle: '.drag-move',
+              }"
+              :list="record.list"
+              @add="$emit('handleColAdd', $event, record.list)"
+            >
+              <transition-group tag="div" name="list" class="list-main">
+                <layoutItem
+                  class="drag-move"
+                  v-for="item in record.list"
+                  :key="item.key"
+                  :selectItem.sync="selectItem"
+                  :record="item"
+                  :UISchema="UISchema"
+                  @handleSelectItem="handleSelectItem"
+                  @handleColAdd="handleColAdd"
+                  @handleCopy="$emit('handleCopy')"
+                  @handleDelete="$emit('handleDelete')"
+                />
+              </transition-group>
+            </draggable>
           </div>
         </a-card>
 
@@ -63,10 +54,10 @@
           <a-icon type="delete" />
         </div>
       </div>
-    </template> -->
-  <!-- 卡片布局 end -->
-  <!-- 栅格布局 start -->
-  <!-- <template v-else-if="record.type === 'grid'">
+    </template>
+    <!-- 卡片布局 end -->
+    <!-- 栅格布局 start -->
+    <template v-else-if="record.type === 'grid'">
       <div
         class="grid-box"
         :class="{ active: record.key === selectItem.key }"
@@ -124,10 +115,10 @@
           <a-icon type="delete" />
         </div>
       </div>
-    </template> -->
-  <!-- 栅格布局 end -->
-  <!-- 表格布局 start -->
-  <!-- <template v-else-if="record.type === 'table'">
+    </template>
+    <!-- 栅格布局 end -->
+    <!-- 表格布局 start -->
+    <template v-else-if="record.type === 'table'">
       <div
         class="table-box"
         :class="{ active: record.key === selectItem.key }"
@@ -199,10 +190,19 @@
           <a-icon type="delete" />
         </div>
       </div>
-    </template> -->
-  <!-- 表格布局 end -->
-
-  <!-- </div> -->
+    </template>
+    <!-- 表格布局 end -->
+    <template v-else>
+      <FormNode
+        :selectItem.sync="selectItem"
+        :record="record"
+        :UISchema="UISchema"
+        @handleSelectItem="handleSelectItem"
+        @handleCopy="$emit('handleCopy')"
+        @handleDelete="$emit('handleDelete')"
+      />
+    </template>
+  </div>
 </template>
 
 <script lang="ts">
@@ -217,7 +217,7 @@ import FormNode from "./FormNode.vue";
   },
 })
 export default class LayoutItem extends Vue {
-  @Prop({ required: true, type: Array })
+  @Prop({ type: Array, default: () => {} })
   list;
   @Prop({ type: Object })
   UISchema;
@@ -230,9 +230,7 @@ export default class LayoutItem extends Vue {
   }
 
   handleColAdd(e, list) {
-    console.log(e);
-    console.log(list);
-    // this.$emit("handleColAdd", e, list);
+    this.$emit("handleColAdd", e, list);
   }
 }
 </script>

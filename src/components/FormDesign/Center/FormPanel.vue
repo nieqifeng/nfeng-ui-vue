@@ -4,8 +4,7 @@
       从左侧选择控件添加
     </p>
     <a-form class="a-form-box" :layout="UISchema.layout">
-      <!-- <nestedDraggable :list="list"></nestedDraggable> -->
-      <draggable
+      <!-- <draggable
         tag="div"
         class="draggable-box"
         v-bind="{
@@ -16,11 +15,9 @@
         }"
         :list="list"
       >
-        <transition-group tag="div" name="list" class="list-main">
+        <transition-group tag="div" name="list" class="list-main"> -->
           <LayoutItem
-            v-for="record in list"
-            :key="record.key"
-            :record="record"
+            :list="list"
             :UISchema="UISchema"
             :selectItem.sync="selectItem"
             @handleSelectItem="handleSelectItem"
@@ -28,8 +25,8 @@
             @handleDelete="handleDelete"
             @handleColAdd="handleColAdd"
           />
-        </transition-group>
-      </draggable>
+        <!-- </transition-group>
+      </draggable> -->
     </a-form>
   </div>
 </template>
@@ -38,13 +35,11 @@
 import { Component, Emit, Prop, Vue } from "vue-property-decorator";
 import draggable from "vuedraggable";
 import LayoutItem from "./LayoutItem.vue";
-import nestedDraggable from "./nested.vue";
 
 @Component({
   components: {
     draggable,
-    LayoutItem,
-    nestedDraggable
+    LayoutItem
   },
 })
 export default class FormPanel extends Vue {
@@ -54,31 +49,6 @@ export default class FormPanel extends Vue {
   selectItem;
   @Prop({ type: Array, default: () => [] })
   list
-
-  tasks = [
-        {
-          key: "task 1",
-          list: [
-            {
-              key: "task 2",
-              list: []
-            }
-          ]
-        },
-        {
-          key: "task 3",
-          list: [
-            {
-              key: "task 4",
-              list: []
-            }
-          ]
-        },
-        {
-          key: "task 5",
-          list: []
-        }
-      ];
 
   onAdd(evt) {
     console.log(evt)

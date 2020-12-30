@@ -64,7 +64,12 @@ export default class LeftSide extends Vue {
   layoutList = layoutList;
 
   cloneDog(element) {
-    return { ...element, key: element.type + "_" + new Date().getTime(), list: []};
+    const obj = {
+      ...element,
+      key: element.type + "_" + new Date().getTime(),
+      list: [],
+    };
+    return obj;
   }
 }
 </script>
