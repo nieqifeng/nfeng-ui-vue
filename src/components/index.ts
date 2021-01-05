@@ -9,6 +9,7 @@ import Table from "./Table";
 import TableImg from "./TableImg";
 import Form from "./Form";
 import FormItem from "./FormItem";
+import FormLayout from "./FormLayout";
 import FormCreate from "./FormCreate";
 import FormDesign from "./FormDesign";
 import FormSearch from "./FormSearch";
@@ -27,6 +28,7 @@ components.set("nf-table", Table);
 components.set("nf-table-img", TableImg);
 components.set("nf-form", Form);
 components.set("NfFormItem", FormItem);
+components.set("NfFormLayout", FormLayout)
 components.set("nf-form-create", FormCreate);
 components.set("nf-form-design", FormDesign);
 components.set("nf-form-search", FormSearch);

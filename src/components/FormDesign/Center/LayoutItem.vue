@@ -12,18 +12,49 @@
     @add="$emit('handleColAdd', $event, list)"
   >
     <transition-group tag="div" name="list" class="list-main">
-      <div v-for="record in list" :key="record.key">{{record}}
-        <layoutItem
-          v-if="record.type === 'card'"
-          :selectItem.sync="selectItem"
-          :list="record.list"
-          :UISchema="UISchema"
-          @handleSelectItem="handleSelectItem"
-          @handleColAdd="handleColAdd"
-          @handleCopy="$emit('handleCopy')"
-          @handleDelete="$emit('handleDelete')"
-        />
-        <FormNode
+      <div class="drag-move" v-for="record in list" :key="record.key">
+        <!-- 卡片布局 start -->
+        <template v-if="record.type === 'card'">
+          <div
+            class="grid-box"
+            :class="{ active: record.key === selectItem.key }"
+            @click.stop="handleSelectItem(record)"
+          >
+            <NfFormLayout
+              class="grid-row"
+              :type="record.type"
+              :label="record.label"
+            >
+              <layoutItem
+                :list="record.list"
+                :UISchema="UISchema"
+                :selectItem.sync="selectItem"
+                @handleSelectItem="handleSelectItem"
+                @handleColAdd="handleColAdd"
+                @handleCopy="$emit('handleCopy')"
+                @handleDelete="$emit('handleDelete')"
+              ></layoutItem>
+            </NfFormLayout>
+            <div
+              class="copy"
+              :class="record.key === selectItem.key ? 'active' : 'unactivated'"
+              @click.stop="$emit('handleCopy')"
+            >
+              <a-icon type="copy" />
+            </div>
+            <div
+              class="delete"
+              :class="record.key === selectItem.key ? 'active' : 'unactivated'"
+              @click.stop="$emit('handleDelete')"
+            >
+              <a-icon type="delete" />
+            </div>
+          </div>
+        </template>
+        <!-- 卡片布局 end -->
+        {{ record }}
+
+        <!-- <FormNode
           v-else
           :selectItem.sync="selectItem"
           :record="record"
@@ -31,40 +62,10 @@
           @handleSelectItem="handleSelectItem"
           @handleCopy="$emit('handleCopy')"
           @handleDelete="$emit('handleDelete')"
-        />
+        /> -->
       </div>
     </transition-group>
   </draggable>
-  <!-- <div class="drag-move" v-for="record in list" :key="record.key"> -->
-  <!-- 卡片布局 start -->
-  <!-- <template v-if="record.type === 'card'">
-      <div
-        class="grid-box"
-        :class="{ active: record.key === selectItem.key }"
-        @click.stop="handleSelectItem(record)"
-      >
-        <a-card class="grid-row" :title="record.label">
-          <div class="grid-col">
-          </div>
-        </a-card>
-
-        <div
-          class="copy"
-          :class="record.key === selectItem.key ? 'active' : 'unactivated'"
-          @click.stop="$emit('handleCopy')"
-        >
-          <a-icon type="copy" />
-        </div>
-        <div
-          class="delete"
-          :class="record.key === selectItem.key ? 'active' : 'unactivated'"
-          @click.stop="$emit('handleDelete')"
-        >
-          <a-icon type="delete" />
-        </div>
-      </div>
-    </template> -->
-  <!-- 卡片布局 end -->
   <!-- 栅格布局 start -->
   <!-- <template v-else-if="record.type === 'grid'">
       <div
@@ -201,8 +202,6 @@
       </div>
     </template> -->
   <!-- 表格布局 end -->
-
-  <!-- </div> -->
 </template>
 
 <script lang="ts">
@@ -237,7 +236,7 @@ export default class LayoutItem extends Vue {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .batch-box,
 .grid-box,
 .table-box {

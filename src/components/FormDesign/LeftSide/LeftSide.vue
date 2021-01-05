@@ -5,12 +5,17 @@
       <!-- 基础控件 start -->
       <a-collapse-panel v-if="basicsList.length > 0" header="基础控件" key="1">
         <draggable
-          class="dragArea list-group"
-          :list="basicsList"
-          :group="{ name: 'form-draggable', pull: 'clone', put: false }"
+          tag="ul"
+          :value="basicsList"
+          v-bind="{
+            group: { name: 'form-draggable', pull: 'clone', put: false },
+            sort: false,
+            animation: 180,
+            ghostClass: 'moving',
+          }"
           :clone="cloneDog"
         >
-          <div
+          <li
             class="list-group-item"
             v-for="(item, key) in basicsList"
             :key="key"
@@ -19,19 +24,24 @@
               <use :xlink:href="`#${item.icon}`"></use>
             </svg>
             {{ item.label }}
-          </div>
+          </li>
         </draggable>
       </a-collapse-panel>
       <!-- 基础控件 end -->
       <!-- 布局控件 start -->
       <a-collapse-panel v-if="layoutList.length > 0" header="布局控件" key="4">
         <draggable
-          class="dragArea list-group"
-          :list="layoutList"
-          :group="{ name: 'form-draggable', pull: 'clone', put: false }"
+          tag="ul"
+          :value="layoutList"
+          v-bind="{
+            group: { name: 'form-draggable', pull: 'clone', put: false },
+            sort: false,
+            animation: 180,
+            ghostClass: 'moving',
+          }"
           :clone="cloneDog"
         >
-          <div
+          <li
             class="list-group-item"
             v-for="(item, key) in layoutList"
             :key="key"
@@ -40,7 +50,7 @@
               <use :xlink:href="`#${item.icon}`"></use>
             </svg>
             {{ item.label }}
-          </div>
+          </li>
         </draggable>
       </a-collapse-panel>
       <!-- 布局控件 end -->
@@ -98,38 +108,38 @@ aside.form-design-left {
       }
     }
   }
-}
 
-.list-group {
-  padding: 5px;
-  list-style: none;
-  display: flex;
-  margin-bottom: 0;
-  flex-wrap: wrap;
-  // background: #efefef;
+  ul {
+    padding: 5px;
+    list-style: none;
+    display: flex;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+    // background: #efefef;
 
-  .list-group-item {
-    border-radius: 0;
-    border: 0;
-    box-shadow: 1px 0 0 0 #ccc, 0 1px 0 0 #ccc, 1px 1px 0 0 #ccc,
-      1px 0 0 0 #ccc inset, 0 1px 0 0 #ccc inset;
-    padding: 8px 12px;
-    transition: all 0.3s;
-    width: calc(50% - 6px);
-    margin: 2.7px;
-    height: 36px;
-    line-height: 20px;
-    cursor: move;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    transition: all 0.3s;
+    li {
+      border-radius: 0;
+      border: 0;
+      box-shadow: 1px 0 0 0 #ccc, 0 1px 0 0 #ccc, 1px 1px 0 0 #ccc,
+        1px 0 0 0 #ccc inset, 0 1px 0 0 #ccc inset;
+      padding: 8px 12px;
+      transition: all 0.3s;
+      width: calc(50% - 6px);
+      margin: 2.7px;
+      height: 36px;
+      line-height: 20px;
+      cursor: move;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      transition: all 0.3s;
 
-    &:hover {
-      color: #409eff;
-      border: 1px solid #409eff;
-      position: relative;
-      z-index: 1;
-      box-shadow: 0 2px 6px #409eff;
+      &:hover {
+        color: #409eff;
+        border: 1px solid #409eff;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 2px 6px #409eff;
+      }
     }
   }
 }
