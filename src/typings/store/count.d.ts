@@ -1,3 +1,0 @@
-interface ICountState {
-  count: number
-}

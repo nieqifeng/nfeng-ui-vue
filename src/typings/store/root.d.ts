@@ -1,3 +1,0 @@
-interface IRootState {
-  isLoading: boolean
-}
