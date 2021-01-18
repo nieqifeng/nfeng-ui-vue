@@ -1,5 +1,7 @@
 <template>
-  <div>table</div>
+  <div>
+    <Table></Table>
+  </div>
 </template>
 
 <script>
@@ -8,13 +10,14 @@ import {
 } from '/@/api/table'
 
 export default {
+  setup() {
+    const fetchData = page
+    return {
+      fetchData
+    }
+  },
   created() {
     this.fetchData()
-  },
-  methods: {
-    fetchData() {
-      page()
-    }
   }
 }
 </script>script
