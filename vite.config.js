@@ -13,7 +13,7 @@ export default ({ command }) => {
         // default
         mockPath: 'mock',
         localEnabled: command === 'serve',
-      })
+      }),
     ],
     build: {
       lib: {
@@ -26,6 +26,9 @@ export default ({ command }) => {
     },
     alias: {
       '/@': path.resolve(__dirname, 'src')
-    }
+    },
+    optimizeDeps: {
+      include: ["@ant-design/icons-vue"],
+    },
   }
 }

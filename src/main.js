@@ -1,14 +1,12 @@
 import { createApp } from 'vue'
-import App from './App.vue'
 import { router } from './router'
+import App from './App.vue'
+import 'normalize.css'
+import antdComponent from './plugins/ant-design'
 import NfengUI from './plugins/nfeng-ui-vue'
-// import { setupProdMockServer } from './mockProdServer';
+import '/@/styles/index.less'
 const app = createApp(App)
-NfengUI(app)
 app.use(router)
+antdComponent(app) //引入dantd组件注册
+NfengUI(app)
 app.mount('#app')
-// production mock server
-// if (process.env.NODE_ENV === 'production') {
-//   console.log(111);
-//   setupProdMockServer();
-// }

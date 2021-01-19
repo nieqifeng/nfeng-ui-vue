@@ -35,10 +35,14 @@ module.exports = [
           index < pageSize * current && index >= pageSize * (current - 1)
       )
       return {
-        code: 200,
-        msg: 'success',
-        total: mockList.length,
-        data: pageList,
+        code: 0,
+        data: {
+          list: pageList,
+          total: mockList.length,
+        },
+        failed: false,
+        msg: null,
+        succeed: true,
       }
     },
   },
