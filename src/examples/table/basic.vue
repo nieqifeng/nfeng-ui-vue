@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Table :find="fetchData" :columns="columns"></Table>
+    <Table :find="fetchData" :params="searchForm" :columns="columns" @onPageChange="pageChange"></Table>
   </div>
 </template>
 
@@ -12,8 +12,10 @@ import {
 export default {
   data() {
     return {
-      total: 1,
-      dataSource: [],
+      searchForm: {
+        page: 1,
+        limit: 10
+      },
       columns: [
         {
           title: "ID",
@@ -48,6 +50,12 @@ export default {
     const fetchData = page
     return {
       fetchData
+    }
+  },
+  methods: {
+    pageChange(page, cb) {
+      this.searchForm.page = page
+      cb()
     }
   }
 }

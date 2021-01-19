@@ -85,12 +85,10 @@
         :show-total="total => `共 ${total} 条`"
         show-quick-jumper
         :page-size="pageData.limit"
-        :page-size-options="
-          pageSizeOptions ? pageSizeOptions : [pageData.limit.toString()]
-        "
+        :page-size-options="pageSizeOptions ? pageSizeOptions : [pageData.limit.toString()]"
         :show-size-changer="showSizeChanger"
         @change="onPageChange"
-          @showSizeChange="onShowSizeChange"
+        @showSizeChange="onShowSizeChange"
       ></a-pagination>
     </div>
   </div>
@@ -102,20 +100,23 @@ export default {
   name: "Table",
   props: {
     columns: Array, //根据文档的配置即可
-    dataSource: Array,
-    showSizeChanger: {
-      type: Boolean,
-      default: false
-    },
-    select: {
-      type: Boolean,
-      default: false,
-    },
     find: {
       type: Function,
       required: true,
     },
+    params: {
+      type: Object,
+    },
+    dataSource: Array,
+    select: {
+      type: Boolean,
+      default: false,
+    },
     pageSizeOptions: Array,
+    showSizeChanger: {
+      type: Boolean,
+      default: false
+    },
     pageData: {
       type: Object,
       default() {
@@ -194,9 +195,9 @@ export default {
   created() {
     this.fetchDate();
   },
-  // mounted() {
-  //   this.changeHeight();
-  // },
+  mounted() {
+    this.changeHeight();
+  },
   methods: {
     async fetchDate() {
       if (!this.find) return
@@ -210,7 +211,6 @@ export default {
         }
       })
       this.total = data.total
-      this.changeHeight()
       this.$emit('update:dataSource', data.list)
     },
     //条数改变
@@ -219,7 +219,9 @@ export default {
     },
     //分页切换
     onPageChange(pageNumber) {
-      this.$emit('onPageChange', pageNumber)
+      this.$emit('onPageChange', pageNumber, () => {
+        this.fetchDate()
+      })
       this.selectedRowKeys = []
     },
     //表格筛选

@@ -26,13 +26,13 @@ module.exports = [
     url: '/table/getList',
     type: 'get',
     response(config) {
-      const { title, current = 1, pageSize = 10 } = config.query
+      const { title, page = 1, pageSize = 10 } = config.query
       let mockList = List.filter((item) => {
         return !(title && item.title.indexOf(title) < 0)
       })
       const pageList = mockList.filter(
         (item, index) =>
-          index < pageSize * current && index >= pageSize * (current - 1)
+          index < pageSize * page && index >= pageSize * (page - 1)
       )
       return {
         code: 0,
