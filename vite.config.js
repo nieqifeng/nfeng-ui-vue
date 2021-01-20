@@ -1,7 +1,7 @@
+import vue from '@vitejs/plugin-vue';
 import { viteMockServe } from 'vite-plugin-mock';
-import vue from '@vitejs/plugin-vue'
 
-const path = require('path')
+const path = require('path');
 
 export default ({ command }) => {
   return {
@@ -24,11 +24,24 @@ export default ({ command }) => {
         external: ['vue']
       }
     },
-    alias: {
-      '/@': path.resolve(__dirname, 'src')
+    minify: 'esbuild', //压缩
+    cssPreprocessOptions: { //css预处理
+      less: {
+        modifyVars: {
+          'primary-color': '#FE5F23',
+          'link-color': '#1890FFFF',
+          'info-color': '#1890FFFF'
+        },
+        javascriptEnabled: true
+      }
     },
-    optimizeDeps: {
-      include: ["@ant-design/icons-vue"],
+    optimizeDeps: { //加载的其他资源
+      include: [
+        '@ant-design/icons-vue'
+      ],
+    },
+    alias: { //src目录的配置
+      '/@': path.resolve(__dirname, 'src')
     },
   }
 }

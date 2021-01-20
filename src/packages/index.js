@@ -1,8 +1,10 @@
 import Table from './Table'
+import MoreOperate from './MoreOperate'
 
 const components = {
-  Table
+  Table,
+  MoreOperate
 }
 
-export { Table }
+export { Table, MoreOperate }
 export default components

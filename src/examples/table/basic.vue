@@ -1,15 +1,18 @@
 <template>
-  <div>
+  <div class="container">
+    <MoreOperate :operate="operate"></MoreOperate>
     <Table :find="fetchData" :params="searchForm" :columns="columns" @onPageChange="pageChange"></Table>
   </div>
 </template>
 
 <script>
+import MoreOperate from '../../packages/MoreOperate/MoreOperate.vue'
 import {
   page
 } from '/@/api/table'
 
 export default {
+  components: { MoreOperate },
   data() {
     return {
       searchForm: {
@@ -43,7 +46,18 @@ export default {
           title: "datetime",
           dataIndex: "datetime",
         },
-      ]
+      ],
+      operate: [
+        {
+          title: '导出',
+          operate: 'export'
+        },
+        {
+          title: '新增',
+          type: 'primary',
+          operate: 'create'
+        }
+      ],
     }
   },
   setup() {
