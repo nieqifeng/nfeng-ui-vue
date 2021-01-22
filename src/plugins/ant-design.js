@@ -1,4 +1,4 @@
-// import 'ant-design-vue/dist/antd.css'
+import 'ant-design-vue/dist/antd.less'
 import {
   Button,
   Layout,
@@ -79,7 +79,6 @@ export default app => {
   app.use(Pagination)
   app.use(Radio)
   app.use(Modal)
-  app.use(Radio)
   app.use(Upload)
   app.use(Spin)
   app.use(Tabs)
