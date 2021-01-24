@@ -3,5 +3,5 @@ node_modules
 dist
 dist-ssr
 *.local
-package-local.json
+package-lock.json
 yarn.lock
