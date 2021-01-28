@@ -1,6 +1,6 @@
-import { Table, MoreOperate } from "../../lib/main";
+import { Table, Operate } from "../../lib/main";
 
 export default app => {
   app.use(Table)
-  app.use(MoreOperate)
+  app.use(Operate)
 }

@@ -1,13 +1,13 @@
 import req from '/@/utils/request'
 import URL from '../baseUrlConfig'
 
-const baseURL = URL.mock
+const baseURL = URL.nest
 
 // 分页
 export const page = params => {
   return req({
     baseURL,
-    url: '/table/getList',
+    url: '/episodes/page',
     method: 'GET',
     params
   })

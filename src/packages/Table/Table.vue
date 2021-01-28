@@ -1,5 +1,12 @@
 <template>
   <div class="table-component">
+    <!-- 操作 -->
+    <div class="operate-box">
+      <Operate v-if="operate" :title="title" :operate="operate">
+        <h3>{{title}}</h3>
+      </Operate>
+    </div>
+    <!-- 表格 -->
     <div class="table-box">
       <a-table
         bordered
@@ -78,7 +85,7 @@
       </a-table>
     </div>
     <!-- 分页 -->
-    <div v-if="pageData && total > pageData.limit" class="page-box">
+    <div v-if="params && total > params.limit" class="page-box">
       <a-pagination
         v-model:current="pageData.page"
         :total="total"
@@ -99,12 +106,16 @@ import { nextTick, ref } from 'vue'
 export default {
   name: "Table",
   props: {
+    title: String,
     columns: Array, //根据文档的配置即可
     find: {
       type: Function,
       required: true,
     },
     params: {
+      type: Object,
+    },
+    operate: {
       type: Object,
     },
     dataSource: Array,
@@ -137,6 +148,23 @@ export default {
     slotsArr() {
       return this.columns.filter(v => v.slots && v.slots !== {})
     },
+    operation() {
+      return function(record, index, event) {
+        let allowList = []
+        event.forEach(item => {
+          if (item.function) {
+            item.function.factors.forEach(num => {
+              if (num === record[item.function.determine]) {
+                allowList.push(item)
+              }
+            })
+          } else {
+            allowList.push(item)
+          }
+        })
+        return allowList
+      }
+    }
   },
   watch: {
     dataSource() {

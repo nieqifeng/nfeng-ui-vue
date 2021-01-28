@@ -1,18 +1,21 @@
+<!--
+ * @Date: 2021-01-25 15:22:09
+ * @LastEditors: N-feng
+ * @LastEditTime: 2021-01-27 16:16:41
+ * @FilePath: /nfeng-ui-vue/src/examples/table/basic.vue
+-->
 <template>
   <div class="container">
-    <MoreOperate :operate="operate"></MoreOperate>
-    <Table :find="fetchData" :params="searchForm" :columns="columns" @onPageChange="pageChange"></Table>
+    <Table title="课时管理" :find="fetchData" :params="searchForm" :operate="operate" :columns="columns" @onPageChange="pageChange"></Table>
   </div>
 </template>
 
 <script>
-import MoreOperate from '../../packages/MoreOperate/MoreOperate.vue'
 import {
   page
 } from '/@/api/table'
 
 export default {
-  components: { MoreOperate },
   data() {
     return {
       searchForm: {
@@ -21,30 +24,34 @@ export default {
       },
       columns: [
         {
-          title: "ID",
-          dataIndex: "id",
-          scopedSlots: { customRender: "id" },
+          title: "视频名称",
+          dataIndex: "name",
         },
         {
-          title: "title",
-          dataIndex: "title",
+          title: "视频地址",
+          dataIndex: "file",
         },
         {
-          title: "description",
-          dataIndex: "description",
+          title: "课程名称",
+          dataIndex: "course",
         },
         {
-          title: "author",
-          dataIndex: "author",
-        },
-        {
-          title: "img",
-          dataIndex: "img",
-          scopedSlots: { customRender: "img" },
-        },
-        {
-          title: "datetime",
-          dataIndex: "datetime",
+          title: '操作',
+          width: 120,
+          fixed: 'right',
+          slots: {
+            customRender: 'operation'
+          },
+          operators: [
+            {
+              name: '编辑',
+              method: 'editor'
+            },
+            {
+              name: '删除',
+              method: 'delete'
+            }
+          ]
         },
       ],
       operate: [
@@ -70,6 +77,9 @@ export default {
     pageChange(page, cb) {
       this.searchForm.page = page
       cb()
+    },
+    editor() {
+      console.log('editor')
     }
   }
 }
