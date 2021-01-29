@@ -1,11 +1,10 @@
 <template>
-  <div class="operateForm">
+  <div class="operate-component">
     <a-form ref="operateForm" :model="operateForm" class="flex">
       <slot></slot>
       <div class="operate_right">
-        <template v-for="(item, index) in operateShow" class="btnBox">
-          <a-button 
-            :key="index"
+        <div v-for="(item, index) in operateShow" :key="index" class="btnBox">
+          <a-button
             v-if="!item.hide"
             :type="item.type"
             :confirm-loading="
@@ -16,10 +15,9 @@
             <component :is="item.icon"></component>
             {{ item.title }}
           </a-button>
-        </template>
-        <a-form-item name="operateBtn">
+        </div>
+        <a-form-item name="operateBtn" v-if="operateHide.length != 0">
           <a-select
-            v-if="operateHide.length != 0"
             v-model="operateForm.operateBtn"
             placeholder="更多操作"
             size="small"
@@ -50,7 +48,7 @@
  * @param {function} confirm 点击确定
  */
 export default {
-  name: 'MoreOperate',
+  name: 'Operate',
   props: {
     operate: Array
   },
@@ -76,6 +74,7 @@ export default {
   },
   methods: {
     changeOperate(operate, parameter) {
+      console.log('operate: ', operate);
       if (operate === 'columnSettings') {
         //列设置
         this.$refs.checkSeetingRef.openSeeting()
